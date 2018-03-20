@@ -1,4 +1,5 @@
 from conans import ConanFile, CMake, tools
+import os
 
 
 class MariadbConnectorConan(ConanFile):
@@ -10,15 +11,15 @@ class MariadbConnectorConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     options = {"shared": [True, False], "fPIC": [True, False]}
     default_options = "shared=False", "fPIC=True"
-    requires = "zlib/1.2.11@conan/stable", "libiconv/1.15@bincrafters/stable"
+    requires = "zlib/1.2.11@conan/stable"
     generators = "cmake"
-    source_subfolder = "mariadb-connector-c-{0}-src".format(version)
+    source_subfolder = "source_subfolder"
 
     def source(self):
         tools.get(
             "https://downloads.mariadb.org/f/connector-c-{0}/mariadb-connector-c-{0}-src.zip?serve".format(self.version))
-        # This small hack might be useful to guarantee proper /MT /MD linkage in MSVC
-        # if the packaged project doesn't have variables to set it properly
+        os.rename(
+            "mariadb-connector-c-{0}-src".format(self.version), self.source_subfolder)
         tools.replace_in_file("{0}/CMakeLists.txt".format(self.source_subfolder), "PROJECT(mariadb-connector-c C)",
                               '''PROJECT(mariadb-connector-c C)
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
@@ -30,17 +31,16 @@ conan_basic_setup()''')
 
     def build(self):
         cmake = CMake(self)
-        cmake.definitions["WITH_EXTERNAL_ZLIB"] = True
+        if self.settings.os != "Windows":
+            cmake.definitions["WITH_EXTERNAL_ZLIB"] = True
+            cmake.definitions["CMAKE_POSITION_INDEPENDENT_CODE"] = self.options.fPIC
+        cmake.definitions["WITH_UNITTEST"] = False
         cmake.configure(source_folder=self.source_subfolder)
         cmake.build()
 
-        # Explicit way:
-        # self.run('cmake %s/hello %s' % (self.source_folder, cmake.command_line))
-        # self.run("cmake --build . %s" % cmake.build_config)
-
     def package(self):
-        self.copy("*.h", dst="include",
-                  src="{0}/include".format(self.source_subfolder))
+        include_folder = "{0}/include".format(self.source_subfolder)
+        self.copy("*.h", dst="include", src=include_folder)
         self.copy("*.h", dst="include", src="include")
         self.copy("*.lib", dst="lib", keep_path=False)
         self.copy("*.dll", dst="bin", keep_path=False)
@@ -50,4 +50,7 @@ conan_basic_setup()''')
         self.copy("*.a", dst="lib", keep_path=False)
 
     def package_info(self):
-        self.cpp_info.libs = ["mariadb"]
+        if self.settings.os == "Windows":
+            self.cpp_info.libs = tools.collect_libs(self)
+        else:
+            self.cpp_info.libs = ["mariadb", "mariadbclient"]
