@@ -17,7 +17,7 @@ class MariadbConnectorConan(ConanFile):
 
     def source(self):
         tools.get(
-            "https://downloads.mariadb.org/f/connector-c-{0}/mariadb-connector-c-{0}-src.zip?serve".format(self.version))
+            "https://downloads.mariadb.org/f/connector-c-{0}/mariadb-connector-c-{0}-src.zip".format(self.version))
         os.rename(
             "mariadb-connector-c-{0}-src".format(self.version), self.source_subfolder)
         tools.replace_in_file("{0}/CMakeLists.txt".format(self.source_subfolder), "PROJECT(mariadb-connector-c C)",
