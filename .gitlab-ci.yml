@@ -47,12 +47,6 @@ Build CentOS/GCC:
   - linux-docker
   <<: *build_template
 
-Build CentOS/Clang:
-  image: registry.stabletec.com/docker/build-core/centos:clang
-  tags:
-  - linux-docker
-  <<: *build_template
-
 # Recipe Stage
 
 Recipe Upload:
@@ -85,12 +79,6 @@ Upload Fedora/Clang:
 
 Upload CentOS/GCC:
   image: registry.stabletec.com/docker/build-core/centos:gcc
-  tags:
-  - linux-docker
-  <<: *upload_template
-
-Upload CentOS/Clang:
-  image: registry.stabletec.com/docker/build-core/centos:clang
   tags:
   - linux-docker
   <<: *upload_template
