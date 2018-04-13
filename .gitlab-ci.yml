@@ -8,10 +8,10 @@ stages:
   before_script:
   - conan remote add $CONAN_REMOTE_NAME $CONAN_REMOTE_ADDRESS
   script:
-  - conan create -s build_type=Debug -o *:shared=False . $CONAN_USER/$CI_COMMIT_REF_NAME
-  - conan create -s build_type=Debug -o *:shared=True . $CONAN_USER/$CI_COMMIT_REF_NAME
-  - conan create -s build_type=Release -o *:shared=False . $CONAN_USER/$CI_COMMIT_REF_NAME
-  - conan create -s build_type=Release -o *:shared=True . $CONAN_USER/$CI_COMMIT_REF_NAME
+  - conan create -s build_type=Debug -o *:shared=False --build outdated . $CONAN_USER/$CI_COMMIT_REF_NAME
+  - conan create -s build_type=Debug -o *:shared=True --build outdated . $CONAN_USER/$CI_COMMIT_REF_NAME
+  - conan create -s build_type=Release -o *:shared=False --build outdated . $CONAN_USER/$CI_COMMIT_REF_NAME
+  - conan create -s build_type=Release -o *:shared=True --build outdated . $CONAN_USER/$CI_COMMIT_REF_NAME
 
 .upload_packages: &upload_template
   stage: Packaging
@@ -19,12 +19,12 @@ stages:
   - master
   before_script:
   - conan remote add $CONAN_REMOTE_NAME $CONAN_REMOTE_ADDRESS
-  - conan user -r=$CONAN_REMOTE_NAME -p $CONAN_PASSWORD $CONAN_USER
+  - conan user -r $CONAN_REMOTE_NAME -p $CONAN_PASSWORD $CONAN_USER
   script:
-  - conan create -s build_type=Debug -o *:shared=False . $CONAN_USER/$CI_COMMIT_REF_NAME
-  - conan create -s build_type=Debug -o *:shared=True . $CONAN_USER/$CI_COMMIT_REF_NAME
-  - conan create -s build_type=Release -o *:shared=False . $CONAN_USER/$CI_COMMIT_REF_NAME
-  - conan create -s build_type=Release -o *:shared=True . $CONAN_USER/$CI_COMMIT_REF_NAME
+  - conan create -s build_type=Debug -o *:shared=False --build outdated . $CONAN_USER/$CI_COMMIT_REF_NAME
+  - conan create -s build_type=Debug -o *:shared=True --build outdated . $CONAN_USER/$CI_COMMIT_REF_NAME
+  - conan create -s build_type=Release -o *:shared=False --build outdated . $CONAN_USER/$CI_COMMIT_REF_NAME
+  - conan create -s build_type=Release -o *:shared=True --build outdated . $CONAN_USER/$CI_COMMIT_REF_NAME
   - conan upload -r $CONAN_REMOTE_NAME -c -no recipe --all mariadb-connector/*
 
 # Test Build Stage
