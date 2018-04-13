@@ -1,0 +1,96 @@
+stages:
+  - Test Build
+  - Recipe
+  - Packaging
+
+.build_packages: &build_template
+  stage: Test Build
+  before_script:
+  - conan remote add $CONAN_REMOTE_NAME $CONAN_REMOTE_ADDRESS
+  script:
+  - conan create -s build_type=Debug -o *:shared=False . $CONAN_USER/$CI_COMMIT_REF_NAME
+  - conan create -s build_type=Debug -o *:shared=True . $CONAN_USER/$CI_COMMIT_REF_NAME
+  - conan create -s build_type=Release -o *:shared=False . $CONAN_USER/$CI_COMMIT_REF_NAME
+  - conan create -s build_type=Release -o *:shared=True . $CONAN_USER/$CI_COMMIT_REF_NAME
+
+.upload_packages: &upload_template
+  stage: Packaging
+  only:
+  - master
+  before_script:
+  - conan remote add $CONAN_REMOTE_NAME $CONAN_REMOTE_ADDRESS
+  - conan user -r=$CONAN_REMOTE_NAME -p $CONAN_PASSWORD $CONAN_USER
+  script:
+  - conan create -s build_type=Debug -o *:shared=False . $CONAN_USER/$CI_COMMIT_REF_NAME
+  - conan create -s build_type=Debug -o *:shared=True . $CONAN_USER/$CI_COMMIT_REF_NAME
+  - conan create -s build_type=Release -o *:shared=False . $CONAN_USER/$CI_COMMIT_REF_NAME
+  - conan create -s build_type=Release -o *:shared=True . $CONAN_USER/$CI_COMMIT_REF_NAME
+  - conan upload -r $CONAN_REMOTE_NAME -c -no recipe --all mariadb-connector/*
+
+# Test Build Stage
+
+Build Fedora/GCC:
+  image: git.stabletec.com/docker/build-core/fedora:gcc
+  tags:
+  - linux-docker
+  <<: *build_template
+
+Build Fedora/Clang:
+  image: git.stabletec.com/docker/build-core/fedora:clang
+  tags:
+  - linux-docker
+  <<: *build_template
+
+Build CentOS/GCC:
+  image: git.stabletec.com/docker/build-core/centos:gcc
+  tags:
+  - linux-docker
+  <<: *build_template
+
+Build CentOS/Clang:
+  image: git.stabletec.com/docker/build-core/centos:clang
+  tags:
+  - linux-docker
+  <<: *build_template
+
+# Recipe Stage
+
+Recipe Upload:
+  stage: Recipe
+  image: git.stabletec.com/docker/build-core/fedora:gcc
+  only:
+  - master
+  tags:
+  - linux-docker
+  before_script:
+  - conan remote add $CONAN_REMOTE_NAME $CONAN_REMOTE_ADDRESS
+  - conan user -r=$CONAN_REMOTE_NAME -p $CONAN_PASSWORD $CONAN_USER
+  script:
+  - conan export . $CONAN_USER/$CI_COMMIT_REF_NAME
+  - conan upload mariadb-connector/*
+
+# Packaging Stage
+
+Upload Fedora/GCC:
+  image: git.stabletec.com/docker/build-core/fedora:gcc
+  tags:
+  - linux-docker
+  <<: *upload_template
+
+Upload Fedora/Clang:
+  image: git.stabletec.com/docker/build-core/fedora:clang
+  tags:
+  - linux-docker
+  <<: *upload_template
+
+Upload CentOS/GCC:
+  image: git.stabletec.com/docker/build-core/centos:gcc
+  tags:
+  - linux-docker
+  <<: *upload_template
+
+Upload CentOS/Clang:
+  image: git.stabletec.com/docker/build-core/centos:clang
+  tags:
+  - linux-docker
+  <<: *upload_template
