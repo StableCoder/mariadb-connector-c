@@ -30,25 +30,25 @@ stages:
 # Test Build Stage
 
 Build Fedora/GCC:
-  image: git.stabletec.com/docker/build-core/fedora:gcc
+  image: registry.stabletec.com/docker/build-core/fedora:gcc
   tags:
   - linux-docker
   <<: *build_template
 
 Build Fedora/Clang:
-  image: git.stabletec.com/docker/build-core/fedora:clang
+  image: registry.stabletec.com/docker/build-core/fedora:clang
   tags:
   - linux-docker
   <<: *build_template
 
 Build CentOS/GCC:
-  image: git.stabletec.com/docker/build-core/centos:gcc
+  image: registry.stabletec.com/docker/build-core/centos:gcc
   tags:
   - linux-docker
   <<: *build_template
 
 Build CentOS/Clang:
-  image: git.stabletec.com/docker/build-core/centos:clang
+  image: registry.stabletec.com/docker/build-core/centos:clang
   tags:
   - linux-docker
   <<: *build_template
@@ -57,7 +57,7 @@ Build CentOS/Clang:
 
 Recipe Upload:
   stage: Recipe
-  image: git.stabletec.com/docker/build-core/fedora:gcc
+  image: registry.stabletec.com/docker/build-core/fedora:gcc
   only:
   - master
   tags:
@@ -72,25 +72,25 @@ Recipe Upload:
 # Packaging Stage
 
 Upload Fedora/GCC:
-  image: git.stabletec.com/docker/build-core/fedora:gcc
+  image: registry.stabletec.com/docker/build-core/fedora:gcc
   tags:
   - linux-docker
   <<: *upload_template
 
 Upload Fedora/Clang:
-  image: git.stabletec.com/docker/build-core/fedora:clang
+  image: registry.stabletec.com/docker/build-core/fedora:clang
   tags:
   - linux-docker
   <<: *upload_template
 
 Upload CentOS/GCC:
-  image: git.stabletec.com/docker/build-core/centos:gcc
+  image: registry.stabletec.com/docker/build-core/centos:gcc
   tags:
   - linux-docker
   <<: *upload_template
 
 Upload CentOS/Clang:
-  image: git.stabletec.com/docker/build-core/centos:clang
+  image: registry.stabletec.com/docker/build-core/centos:clang
   tags:
   - linux-docker
   <<: *upload_template
