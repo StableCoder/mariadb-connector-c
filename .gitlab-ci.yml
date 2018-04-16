@@ -6,79 +6,79 @@ stages:
 .build_packages: &build_template
   stage: Test Build
   before_script:
-  - conan remote add $CONAN_REMOTE_NAME $CONAN_REMOTE_ADDRESS
+    - conan remote add $CONAN_REMOTE_NAME $CONAN_REMOTE_ADDRESS
   script:
-  - conan create -s build_type=Debug -o *:shared=False --build outdated . $CONAN_USER/$CI_COMMIT_REF_NAME
-  - conan create -s build_type=Debug -o *:shared=True --build outdated . $CONAN_USER/$CI_COMMIT_REF_NAME
-  - conan create -s build_type=Release -o *:shared=False --build outdated . $CONAN_USER/$CI_COMMIT_REF_NAME
-  - conan create -s build_type=Release -o *:shared=True --build outdated . $CONAN_USER/$CI_COMMIT_REF_NAME
+    - conan create -s build_type=Debug -o *:shared=False --build outdated . $CONAN_USER/$CI_COMMIT_REF_NAME
+    - conan create -s build_type=Debug -o *:shared=True --build outdated . $CONAN_USER/$CI_COMMIT_REF_NAME
+    - conan create -s build_type=Release -o *:shared=False --build outdated . $CONAN_USER/$CI_COMMIT_REF_NAME
+    - conan create -s build_type=Release -o *:shared=True --build outdated . $CONAN_USER/$CI_COMMIT_REF_NAME
 
 .upload_packages: &upload_template
   stage: Packaging
   only:
-  - master
+    - master
   before_script:
-  - conan remote add $CONAN_REMOTE_NAME $CONAN_REMOTE_ADDRESS
-  - conan user -r $CONAN_REMOTE_NAME -p $CONAN_PASSWORD $CONAN_USER
+    - conan remote add $CONAN_REMOTE_NAME $CONAN_REMOTE_ADDRESS
+    - conan user -r $CONAN_REMOTE_NAME -p $CONAN_PASSWORD $CONAN_USER
   script:
-  - conan create -s build_type=Debug -o *:shared=False --build outdated . $CONAN_USER/$CI_COMMIT_REF_NAME
-  - conan create -s build_type=Debug -o *:shared=True --build outdated . $CONAN_USER/$CI_COMMIT_REF_NAME
-  - conan create -s build_type=Release -o *:shared=False --build outdated . $CONAN_USER/$CI_COMMIT_REF_NAME
-  - conan create -s build_type=Release -o *:shared=True --build outdated . $CONAN_USER/$CI_COMMIT_REF_NAME
-  - conan upload -r $CONAN_REMOTE_NAME -c -no recipe --all mariadb-connector/*
+    - conan create -s build_type=Debug -o *:shared=False --build outdated . $CONAN_USER/$CI_COMMIT_REF_NAME
+    - conan create -s build_type=Debug -o *:shared=True --build outdated . $CONAN_USER/$CI_COMMIT_REF_NAME
+    - conan create -s build_type=Release -o *:shared=False --build outdated . $CONAN_USER/$CI_COMMIT_REF_NAME
+    - conan create -s build_type=Release -o *:shared=True --build outdated . $CONAN_USER/$CI_COMMIT_REF_NAME
+    - conan upload -r $CONAN_REMOTE_NAME -c -no recipe --all mariadb-connector/*
 
 # Test Build Stage
 
 Build Fedora/GCC:
-  image: registry.stabletec.com/docker/build-core/fedora:gcc
+  image: stabletec/build-core:fedora-gcc
   tags:
-  - linux-docker
+    - linux-docker
   <<: *build_template
 
 Build Fedora/Clang:
-  image: registry.stabletec.com/docker/build-core/fedora:clang
+  image: stabletec/build-core:fedora-clang
   tags:
-  - linux-docker
+    - linux-docker
   <<: *build_template
 
 Build CentOS/GCC:
-  image: registry.stabletec.com/docker/build-core/centos:gcc
+  image: stabletec/build-core:centos-gcc
   tags:
-  - linux-docker
+    - linux-docker
   <<: *build_template
 
 # Recipe Stage
 
 Recipe Upload:
   stage: Recipe
-  image: registry.stabletec.com/docker/build-core/fedora:gcc
+  image: stabletec/build-core/fedora-gcc
   only:
-  - master
+    - master
   tags:
-  - linux-docker
+    - linux-docker
   before_script:
-  - conan remote add $CONAN_REMOTE_NAME $CONAN_REMOTE_ADDRESS
-  - conan user -r=$CONAN_REMOTE_NAME -p $CONAN_PASSWORD $CONAN_USER
+    - conan remote add $CONAN_REMOTE_NAME $CONAN_REMOTE_ADDRESS
+    - conan user -r=$CONAN_REMOTE_NAME -p $CONAN_PASSWORD $CONAN_USER
   script:
-  - conan export . $CONAN_USER/$CI_COMMIT_REF_NAME
-  - conan upload mariadb-connector/*
+    - conan export . $CONAN_USER/$CI_COMMIT_REF_NAME
+    - conan upload mariadb-connector/*
 
 # Packaging Stage
 
 Upload Fedora/GCC:
-  image: registry.stabletec.com/docker/build-core/fedora:gcc
+  image: stabletec/build-core:fedora-gcc
   tags:
-  - linux-docker
+    - linux-docker
   <<: *upload_template
 
 Upload Fedora/Clang:
-  image: registry.stabletec.com/docker/build-core/fedora:clang
+  image: stabletec/build-core:fedora-clang
   tags:
-  - linux-docker
+    - linux-docker
   <<: *upload_template
 
 Upload CentOS/GCC:
-  image: registry.stabletec.com/docker/build-core/centos:gcc
+  image: stabletec/build-core:centos-gcc
   tags:
-  - linux-docker
+    - linux-docker
   <<: *upload_template
