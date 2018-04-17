@@ -47,6 +47,12 @@ Build CentOS/GCC:
     - linux-docker
   <<: *build_template
 
+Build Windows/MSVC2017:
+  image: stabletec/build-core:windows-msvc2017
+  tags:
+    - windows-docker
+  <<: *build_template
+
 # Recipe Stage
 
 Recipe Upload:
@@ -81,4 +87,10 @@ Upload CentOS/GCC:
   image: stabletec/build-core:centos-gcc
   tags:
     - linux-docker
+  <<: *upload_template
+
+Upload Windows/MSVC2017:
+  image: stabletec/build-core:windows-msvc2017
+  tags:
+    - windows-docker
   <<: *upload_template
