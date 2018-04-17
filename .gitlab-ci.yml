@@ -32,25 +32,28 @@ stages:
 Build Fedora/GCC:
   image: stabletec/build-core:fedora-gcc
   tags:
-    - linux-docker
+    - linux
+    - docker
   <<: *build_template
 
 Build Fedora/Clang:
   image: stabletec/build-core:fedora-clang
   tags:
-    - linux-docker
+    - linux
+    - docker
   <<: *build_template
 
 Build CentOS/GCC:
   image: stabletec/build-core:centos-gcc
   tags:
-    - linux-docker
+    - linux
+    - docker
   <<: *build_template
 
 Build Windows/MSVC2017:
-  image: stabletec/build-core:windows-msvc2017
   tags:
-    - windows-docker
+    - windows
+    - msvc2017
   <<: *build_template
 
 # Recipe Stage
@@ -61,7 +64,8 @@ Recipe Upload:
   only:
     - master
   tags:
-    - linux-docker
+    - linux
+    - docker
   before_script:
     - conan remote add $CONAN_REMOTE_NAME $CONAN_REMOTE_ADDRESS
     - conan user -r=$CONAN_REMOTE_NAME -p $CONAN_PASSWORD $CONAN_USER
@@ -74,23 +78,26 @@ Recipe Upload:
 Upload Fedora/GCC:
   image: stabletec/build-core:fedora-gcc
   tags:
-    - linux-docker
+    - linux 
+    - docker
   <<: *upload_template
 
 Upload Fedora/Clang:
   image: stabletec/build-core:fedora-clang
   tags:
-    - linux-docker
+    - linux
+    - docker
   <<: *upload_template
 
 Upload CentOS/GCC:
   image: stabletec/build-core:centos-gcc
   tags:
-    - linux-docker
+    - linux
+    - docker
   <<: *upload_template
 
 Upload Windows/MSVC2017:
-  image: stabletec/build-core:windows-msvc2017
   tags:
-    - windows-docker
+    - windows
+    - msvc2017
   <<: *upload_template
