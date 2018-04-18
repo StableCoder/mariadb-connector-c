@@ -109,7 +109,7 @@ Recipe Upload:
     - conan user -r $CONAN_REMOTE_NAME -p $CONAN_PASSWORD $CONAN_USER
   script:
     - conan export . $CONAN_USER/$CI_COMMIT_REF_NAME
-    - conan upload -r %CONAN_REMOTE_NAME% -c mariadb-connector/*
+    - conan upload -r $CONAN_REMOTE_NAME -c mariadb-connector/*
 
 # Packaging Stage
 
