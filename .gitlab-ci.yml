@@ -56,7 +56,7 @@ Build Windows/MSVC2017:
     - windows
     - msvc2017
   before_script:
-    - conan remote add %CONAN_REMOTE_NAME% %CONAN_REMOTE_ADDRESS%
+#    - conan remote add %CONAN_REMOTE_NAME% %CONAN_REMOTE_ADDRESS%
   script:
     - conan create --build outdated -s build_type=Debug -s compiler.runtime=MDd -o *:shared=True . %CONAN_USER%/%CI_COMMIT_REF_NAME%
     - conan create --build outdated -s build_type=Debug -s compiler.runtime=MTd . %CONAN_USER%/%CI_COMMIT_REF_NAME%
@@ -73,7 +73,7 @@ Build Windows/GCC:
     - windows
     - gcc
   before_script:
-    - conan remote add %CONAN_REMOTE_NAME% %CONAN_REMOTE_ADDRESS%
+#    - conan remote add %CONAN_REMOTE_NAME% %CONAN_REMOTE_ADDRESS%
   script:
     - conan create --build outdated -s build_type=Debug -o *:shared=False . %CONAN_USER%/%CI_COMMIT_REF_NAME%
     - conan create --build outdated -s build_type=Debug -o *:shared=True . %CONAN_USER%/%CI_COMMIT_REF_NAME%
@@ -86,7 +86,7 @@ Build Windows/Clang:
     - windows
     - clang
   before_script:
-    - conan remote add %CONAN_REMOTE_NAME% %CONAN_REMOTE_ADDRESS%
+#    - conan remote add %CONAN_REMOTE_NAME% %CONAN_REMOTE_ADDRESS%
   script:
     - conan create --build outdated -s build_type=Debug -o *:shared=False . %CONAN_USER%/%CI_COMMIT_REF_NAME%
     - conan create --build outdated -s build_type=Debug -o *:shared=True . %CONAN_USER%/%CI_COMMIT_REF_NAME%
@@ -141,7 +141,7 @@ Upload Windows/MSVC2017:
   only:
     - master
   before_script:
-    - conan remote add %CONAN_REMOTE_NAME% %CONAN_REMOTE_ADDRESS%
+#    - conan remote add %CONAN_REMOTE_NAME% %CONAN_REMOTE_ADDRESS%
     - conan user -r $CONAN_REMOTE_NAME -p %CONAN_PASSWORD% %CONAN_USER%
   script:
     - conan create --build outdated -s build_type=Debug -s compiler.runtime=MDd -o *:shared=True . %CONAN_USER%/%CI_COMMIT_REF_NAME%
@@ -156,11 +156,13 @@ Upload Windows/MSVC2017:
 
 Upload Windows/GCC:
   stage: Packaging
+  only:
+    - master
   tags:
     - windows
     - gcc
   before_script:
-    - conan remote add %CONAN_REMOTE_NAME% %CONAN_REMOTE_ADDRESS%
+#    - conan remote add %CONAN_REMOTE_NAME% %CONAN_REMOTE_ADDRESS%
     - conan user -r $CONAN_REMOTE_NAME -p %CONAN_PASSWORD% %CONAN_USER%
   script:
     - conan create --build outdated -s build_type=Debug -o *:shared=False . %CONAN_USER%/%CI_COMMIT_REF_NAME%
@@ -171,11 +173,13 @@ Upload Windows/GCC:
 
 Upload Windows/Clang:
   stage: Packaging
+  only:
+    - master
   tags:
     - windows
     - clang
   before_script:
-    - conan remote add %CONAN_REMOTE_NAME% %CONAN_REMOTE_ADDRESS%
+#    - conan remote add %CONAN_REMOTE_NAME% %CONAN_REMOTE_ADDRESS%
     - conan user -r $CONAN_REMOTE_NAME -p %CONAN_PASSWORD% %CONAN_USER%
   script:
     - conan create --build outdated -s build_type=Debug -o *:shared=False . %CONAN_USER%/%CI_COMMIT_REF_NAME%
