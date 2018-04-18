@@ -51,6 +51,7 @@ Build CentOS/GCC:
   <<: *build_template
 
 Build Windows/MSVC2017:
+  stage: Test Build
   tags:
     - windows
     - msvc2017
@@ -63,6 +64,7 @@ Build Windows/MSVC2017:
     - conan create -s build_type=Release --build outdated . %CONAN_USER%/%CI_COMMIT_REF_NAME%
 
 Build Windows/GCC:
+  stage: Test Build
   tags:
     - windows
     - gcc
@@ -75,6 +77,7 @@ Build Windows/GCC:
     - conan create -s build_type=Release -o *:shared=True --build outdated . %CONAN_USER%/%CI_COMMIT_REF_NAME%
 
 Build Windows/Clang:
+  stage: Test Build
   tags:
     - windows
     - clang
