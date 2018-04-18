@@ -106,10 +106,10 @@ Recipe Upload:
     - docker
   before_script:
     - conan remote add $CONAN_REMOTE_NAME $CONAN_REMOTE_ADDRESS
-    - conan user -r=$CONAN_REMOTE_NAME -p $CONAN_PASSWORD $CONAN_USER
+    - conan user -r $CONAN_REMOTE_NAME -p $CONAN_PASSWORD $CONAN_USER
   script:
     - conan export . $CONAN_USER/$CI_COMMIT_REF_NAME
-    - conan upload -c mariadb-connector/*
+    - conan upload -r %CONAN_REMOTE_NAME% -c mariadb-connector/*
 
 # Packaging Stage
 
