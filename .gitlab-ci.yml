@@ -57,6 +57,7 @@ Build Windows/MSVC2017:
     - msvc2017
   before_script:
 #    - conan remote add %CONAN_REMOTE_NAME% %CONAN_REMOTE_ADDRESS%
+    - call %MSVC2017_BUILD_TOOLS%
   script:
     - conan create --build outdated -s build_type=Debug -s compiler.runtime=MDd -o *:shared=True . %CONAN_USER%/%CI_COMMIT_REF_NAME%
     - conan create --build outdated -s build_type=Debug -s compiler.runtime=MTd . %CONAN_USER%/%CI_COMMIT_REF_NAME%
@@ -67,7 +68,7 @@ Build Windows/MSVC2017:
     - conan create --build outdated -s build_type=Release -s compiler.runtime=MD -o *:shared=True . %CONAN_USER%/%CI_COMMIT_REF_NAME%
     - conan create --build outdated -s build_type=Release -s compiler.runtime=MT . %CONAN_USER%/%CI_COMMIT_REF_NAME%
 
-Build Windows/GCC:
+.Build Windows/GCC:
   stage: Test Build
   tags:
     - windows
@@ -80,7 +81,7 @@ Build Windows/GCC:
     - conan create --build outdated -s build_type=Release -o *:shared=False . %CONAN_USER%/%CI_COMMIT_REF_NAME%
     - conan create --build outdated -s build_type=Release -o *:shared=True . %CONAN_USER%/%CI_COMMIT_REF_NAME%
 
-Build Windows/Clang:
+.Build Windows/Clang:
   stage: Test Build
   tags:
     - windows
@@ -143,6 +144,7 @@ Upload Windows/MSVC2017:
   before_script:
 #    - conan remote add %CONAN_REMOTE_NAME% %CONAN_REMOTE_ADDRESS%
     - conan user -r $CONAN_REMOTE_NAME -p %CONAN_PASSWORD% %CONAN_USER%
+    - call %MSVC2017_BUILD_TOOLS%
   script:
     - conan create --build outdated -s build_type=Debug -s compiler.runtime=MDd -o *:shared=True . %CONAN_USER%/%CI_COMMIT_REF_NAME%
     - conan create --build outdated -s build_type=Debug -s compiler.runtime=MTd . %CONAN_USER%/%CI_COMMIT_REF_NAME%
@@ -154,7 +156,7 @@ Upload Windows/MSVC2017:
     - conan create --build outdated -s build_type=Release -s compiler.runtime=MT . %CONAN_USER%/%CI_COMMIT_REF_NAME%
     - conan upload -r %CONAN_REMOTE_NAME% -c -no recipe --all mariadb-connector/*
 
-Upload Windows/GCC:
+.Upload Windows/GCC:
   stage: Packaging
   only:
     - master
@@ -171,7 +173,7 @@ Upload Windows/GCC:
     - conan create --build outdated -s build_type=Release -o *:shared=True . %CONAN_USER%/%CI_COMMIT_REF_NAME%
     - conan upload -r %CONAN_REMOTE_NAME% -c -no recipe --all mariadb-connector/*
 
-Upload Windows/Clang:
+.Upload Windows/Clang:
   stage: Packaging
   only:
     - master
