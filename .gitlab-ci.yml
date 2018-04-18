@@ -98,7 +98,7 @@ Build Windows/MSVC2017:
 
 Recipe Upload:
   stage: Recipe
-  image: stabletec/build-core/fedora-gcc
+  image: stabletec/build-core:fedora-gcc
   only:
     - master
   tags:
