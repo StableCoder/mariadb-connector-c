@@ -25,32 +25,32 @@ stages:
     - conan create --build outdated -s build_type=Debug -o *:shared=True . $CONAN_USER/$CI_COMMIT_REF_NAME
     - conan create --build outdated -s build_type=Release -o *:shared=False . $CONAN_USER/$CI_COMMIT_REF_NAME
     - conan create --build outdated -s build_type=Release -o *:shared=True . $CONAN_USER/$CI_COMMIT_REF_NAME
-    - conan upload -r $CONAN_REMOTE_NAME -c -no recipe --all mariadb-connector/*
+    - conan upload -r $CONAN_REMOTE_NAME --confirm --check mariadb-connector/*@$CONAN_USER/$CI_COMMIT_REF_NAME
 
 # Test Build Stage
 
-Build Fedora/GCC:
+.Build Fedora/GCC:
   image: stabletec/build-core:fedora-gcc
   tags:
     - linux
     - docker
   <<: *build_template
 
-Build Fedora/Clang:
+.Build Fedora/Clang:
   image: stabletec/build-core:fedora-clang
   tags:
     - linux
     - docker
   <<: *build_template
 
-Build CentOS/GCC:
+.Build CentOS/GCC:
   image: stabletec/build-core:centos-gcc
   tags:
     - linux
     - docker
   <<: *build_template
 
-Build Windows/MSVC2017:
+.Build Windows/MSVC2017:
   stage: Test Build
   tags:
     - windows
@@ -109,7 +109,7 @@ Recipe Upload:
     - conan user -r $CONAN_REMOTE_NAME -p $CONAN_PASSWORD $CONAN_USER
   script:
     - conan export . $CONAN_USER/$CI_COMMIT_REF_NAME
-    - conan upload -r $CONAN_REMOTE_NAME -c mariadb-connector/*
+    - conan upload -r $CONAN_REMOTE_NAME --confirm mariadb-connector/*
 
 # Packaging Stage
 
@@ -154,7 +154,7 @@ Upload Windows/MSVC2017:
     - conan create --build outdated -s build_type=Release -s compiler.runtime=MTd . %CONAN_USER%/%CI_COMMIT_REF_NAME%
     - conan create --build outdated -s build_type=Release -s compiler.runtime=MD -o *:shared=True . %CONAN_USER%/%CI_COMMIT_REF_NAME%
     - conan create --build outdated -s build_type=Release -s compiler.runtime=MT . %CONAN_USER%/%CI_COMMIT_REF_NAME%
-    - conan upload -r %CONAN_REMOTE_NAME% -c -no recipe --all mariadb-connector/*
+    - conan upload -r %CONAN_REMOTE_NAME% --confirm --check mariadb-connector/*@%CONAN_USER%/%CI_COMMIT_REF_NAME%
 
 .Upload Windows/GCC:
   stage: Packaging
@@ -171,7 +171,7 @@ Upload Windows/MSVC2017:
     - conan create --build outdated -s build_type=Debug -o *:shared=True . %CONAN_USER%/%CI_COMMIT_REF_NAME%
     - conan create --build outdated -s build_type=Release -o *:shared=False . %CONAN_USER%/%CI_COMMIT_REF_NAME%
     - conan create --build outdated -s build_type=Release -o *:shared=True . %CONAN_USER%/%CI_COMMIT_REF_NAME%
-    - conan upload -r %CONAN_REMOTE_NAME% -c -no recipe --all mariadb-connector/*
+    - conan upload -r %CONAN_REMOTE_NAME% --confirm --check mariadb-connector/*@%CONAN_USER%/%CI_COMMIT_REF_NAME%
 
 .Upload Windows/Clang:
   stage: Packaging
@@ -188,4 +188,4 @@ Upload Windows/MSVC2017:
     - conan create --build outdated -s build_type=Debug -o *:shared=True . %CONAN_USER%/%CI_COMMIT_REF_NAME%
     - conan create --build outdated -s build_type=Release -o *:shared=False . %CONAN_USER%/%CI_COMMIT_REF_NAME%
     - conan create --build outdated -s build_type=Release -o *:shared=True . %CONAN_USER%/%CI_COMMIT_REF_NAME%
-    - conan upload -r %CONAN_REMOTE_NAME% -c -no recipe --all mariadb-connector/*
+    - conan upload -r %CONAN_REMOTE_NAME% --confirm --check mariadb-connector/*@%CONAN_USER%/%CI_COMMIT_REF_NAME%
