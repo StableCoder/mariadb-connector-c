@@ -154,7 +154,7 @@ Upload Windows/MSVC2017:
     - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --update --build outdated -s build_type=Release -s compiler.runtime=MTd
     - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --update --build outdated -s build_type=Release -s compiler.runtime=MD -o *:shared=True
     - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --update --build outdated -s build_type=Release -s compiler.runtime=MT
-    - conan upload -r %CONAN_REMOTE_NAME% --confirm-no recipe mariadb-connector/*@%CONAN_USER%/%CI_COMMIT_REF_NAME%
+    - conan upload -r %CONAN_REMOTE_NAME% --confirm --check -no recipe mariadb-connector/*@%CONAN_USER%/%CI_COMMIT_REF_NAME%
 
 .Upload Windows/GCC:
   stage: Packaging
