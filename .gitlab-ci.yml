@@ -1,178 +1,257 @@
+###########
+# Globals #
+###########
+
 stages:
-  - Test Build
-  - Recipe
-  - Packaging
+  - Conan Test Build
+  - Conan Recipe Upload
+  - Conan Binary Upload
 
-.build_packages: &build_template
-  stage: Test Build
-  before_script:
-    - conan remote add $CONAN_REMOTE_NAME $CONAN_REMOTE_ADDRESS
-  script:
-    - conan create . $CONAN_USER/$CI_COMMIT_REF_NAME --build outdated -s build_type=Debug -o *:shared=False
-    - conan create . $CONAN_USER/$CI_COMMIT_REF_NAME --build outdated -s build_type=Debug -o *:shared=True
-    - conan create . $CONAN_USER/$CI_COMMIT_REF_NAME --build outdated -s build_type=Release -o *:shared=False
-    - conan create . $CONAN_USER/$CI_COMMIT_REF_NAME --build outdated -s build_type=Release -o *:shared=True
+####################
+# Conan Test Build #
+####################
 
-.upload_packages: &upload_template
-  stage: Packaging
-  before_script:
-    - conan remote add $CONAN_REMOTE_NAME $CONAN_REMOTE_ADDRESS
-    - conan user -r $CONAN_REMOTE_NAME -p $CONAN_PASSWORD $CONAN_USER
-  script:
-    - conan create . $CONAN_USER/$CI_COMMIT_REF_NAME --update -ne --build outdated -s build_type=Debug -o *:shared=False
-    - conan create . $CONAN_USER/$CI_COMMIT_REF_NAME --update -ne --build outdated -s build_type=Debug -o *:shared=True
-    - conan create . $CONAN_USER/$CI_COMMIT_REF_NAME --update -ne --build outdated -s build_type=Release -o *:shared=False
-    - conan create . $CONAN_USER/$CI_COMMIT_REF_NAME --update -ne --build outdated -s build_type=Release -o *:shared=True
-    - conan upload -r $CONAN_REMOTE_NAME --confirm --check -no recipe --all mariadb-connector/*@$CONAN_USER/$CI_COMMIT_REF_NAME
-
-# Test Build Stage
-
-Build Fedora/GCC:
+Linux/GCC Build:
+  stage: Conan Test Build
   image: stabletec/build-core:fedora-gcc
   tags:
     - linux
     - docker
-  <<: *build_template
+  dependencies: []
+  script:
+    - conan create . $CONAN_USER/$CI_COMMIT_REF_NAME --build missing -s build_type=Debug -o *:shared=False
+    - conan create . $CONAN_USER/$CI_COMMIT_REF_NAME --build missing -s build_type=Debug -o *:shared=True
+    - conan create . $CONAN_USER/$CI_COMMIT_REF_NAME --build missing -s build_type=Release -o *:shared=False
+    - conan create . $CONAN_USER/$CI_COMMIT_REF_NAME --build missing -s build_type=Release -o *:shared=True
 
-Build Fedora/Clang:
+Linux/Clang Build:
+  stage: Conan Test Build
   image: stabletec/build-core:fedora-clang
   tags:
     - linux
     - docker
-  <<: *build_template
+  dependencies: []
+  script:
+    - conan create . $CONAN_USER/$CI_COMMIT_REF_NAME --build missing -s build_type=Debug -o *:shared=False
+    - conan create . $CONAN_USER/$CI_COMMIT_REF_NAME --build missing -s build_type=Debug -o *:shared=True
+    - conan create . $CONAN_USER/$CI_COMMIT_REF_NAME --build missing -s build_type=Release -o *:shared=False
+    - conan create . $CONAN_USER/$CI_COMMIT_REF_NAME --build missing -s build_type=Release -o *:shared=True
 
-Build CentOS/GCC:
+CentOS/GCC Build:
+  stage: Conan Test Build
   image: stabletec/build-core:centos-gcc
   tags:
     - linux
     - docker
-  <<: *build_template
+  dependencies: []
+  script:
+    - conan create . $CONAN_USER/$CI_COMMIT_REF_NAME --build missing -s build_type=Debug -o *:shared=False
+    - conan create . $CONAN_USER/$CI_COMMIT_REF_NAME --build missing -s build_type=Debug -o *:shared=True
+    - conan create . $CONAN_USER/$CI_COMMIT_REF_NAME --build missing -s build_type=Release -o *:shared=False
+    - conan create . $CONAN_USER/$CI_COMMIT_REF_NAME --build missing -s build_type=Release -o *:shared=True
 
-Build Windows/MSVC2017:
-  stage: Test Build
+Windows/MSVC2017 Build:
+  stage: Conan Test Build
   tags:
     - windows
     - msvc2017
+  dependencies: []
   before_script:
     - call %MSVC2017_BUILD_TOOLS%
   script:
-    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --build outdated -s build_type=Debug -s compiler.runtime=MDd -o *:shared=True
-    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --build outdated -s build_type=Debug -s compiler.runtime=MTd
-    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --build outdated -s build_type=Debug -s compiler.runtime=MD -o *:shared=True
-    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --build outdated -s build_type=Debug -s compiler.runtime=MT
-    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --build outdated -s build_type=Release -s compiler.runtime=MDd -o *:shared=True
-    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --build outdated -s build_type=Release -s compiler.runtime=MTd
-    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --build outdated -s build_type=Release -s compiler.runtime=MD -o *:shared=True
-    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --build outdated -s build_type=Release -s compiler.runtime=MT
+    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --build missing -s build_type=Debug -s compiler.runtime=MDd -o *:shared=True
+    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --build missing -s build_type=Debug -s compiler.runtime=MTd -o *:shared=False
+    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --build missing -s build_type=Debug -s compiler.runtime=MD -o *:shared=True
+    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --build missing -s build_type=Debug -s compiler.runtime=MT -o *:shared=False
+    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --build missing -s build_type=Release -s compiler.runtime=MDd -o *:shared=True
+    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --build missing -s build_type=Release -s compiler.runtime=MTd -o *:shared=False
+    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --build missing -s build_type=Release -s compiler.runtime=MD -o *:shared=True
+    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --build missing -s build_type=Release -s compiler.runtime=MT -o *:shared=False
 
-.Build Windows/GCC:
-  stage: Test Build
+.Windows/GCC Build:
+  stage: Conan Test Build
   tags:
     - windows
     - gcc
-  before_script:
+  dependencies: []
   script:
-    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --build outdated -s build_type=Debug -o *:shared=False
-    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --build outdated -s build_type=Debug -o *:shared=True
-    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --build outdated -s build_type=Release -o *:shared=False
-    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --build outdated -s build_type=Release -o *:shared=True
+    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --build missing -s build_type=Debug -o *:shared=False
+    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --build missing -s build_type=Debug -o *:shared=True
+    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --build missing -s build_type=Release -o *:shared=False
+    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --build missing -s build_type=Release -o *:shared=True
 
-.Build Windows/Clang:
-  stage: Test Build
+.Windows/Clang Build:
+  stage: Conan Test Build
   tags:
     - windows
     - clang
-  before_script:
+  dependencies: []
   script:
-    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --build outdated -s build_type=Debug -o *:shared=False
-    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --build outdated -s build_type=Debug -o *:shared=True
-    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --build outdated -s build_type=Release -o *:shared=False
-    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --build outdated -s build_type=Release -o *:shared=True
+    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --build missing -s build_type=Debug -o *:shared=False
+    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --build missing -s build_type=Debug -o *:shared=True
+    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --build missing -s build_type=Release -o *:shared=False
+    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --build missing -s build_type=Release -o *:shared=True
 
-# Recipe Stage
+#############################
+# Conan Recipe Upload Stage #
+#############################
 
 Recipe Upload:
-  stage: Recipe
-  image: stabletec/build-core:fedora-gcc
+  stage: Conan Recipe Upload
+  image: stabletec/alpine:conan
+  only:
+    - master
   tags:
     - linux
     - docker
+  dependencies: []
   before_script:
     - conan remote add $CONAN_REMOTE_NAME $CONAN_REMOTE_ADDRESS
     - conan user -r $CONAN_REMOTE_NAME -p $CONAN_PASSWORD $CONAN_USER
   script:
     - conan export . $CONAN_USER/$CI_COMMIT_REF_NAME
-    - conan upload -r $CONAN_REMOTE_NAME --confirm --force mariadb-connector/*@$CONAN_USER/$CI_COMMIT_REF_NAME
+    - conan upload -r $CONAN_REMOTE_NAME --confirm --force stec_concurrent/*@$CONAN_USER/$CI_COMMIT_REF_NAME
+  after_script:
+    - conan user --clean
+    - conan remote remove $CONAN_REMOTE_NAME
 
-# Packaging Stage
+#######################
+# Conan Binary Upload #
+#######################
 
-Upload Fedora/GCC:
+Linux/GCC Package:
+  stage: Conan Binary Upload
   image: stabletec/build-core:fedora-gcc
+  only:
+    - master
   tags:
-    - linux 
+    - linux
     - docker
-  <<: *upload_template
+  dependencies: []
+  before_script:
+    - conan remote add $CONAN_REMOTE_NAME $CONAN_REMOTE_ADDRESS
+    - conan user -r $CONAN_REMOTE_NAME -p $CONAN_PASSWORD $CONAN_USER
+  script:
+    - conan create . $CONAN_USER/$CI_COMMIT_REF_NAME --update --not-export --build outdated -s build_type=Debug -o *:shared=False
+    - conan create . $CONAN_USER/$CI_COMMIT_REF_NAME --update --not-export --build outdated -s build_type=Debug -o *:shared=True
+    - conan create . $CONAN_USER/$CI_COMMIT_REF_NAME --update --not-export --build outdated -s build_type=Release -o *:shared=False
+    - conan create . $CONAN_USER/$CI_COMMIT_REF_NAME --update --not-export --build outdated -s build_type=Release -o *:shared=True
+    - conan upload -r $CONAN_REMOTE_NAME --confirm --check --all stec_concurrent/*@$CONAN_USER/$CI_COMMIT_REF_NAME
+  after_script:
+    - conan user --clean
+    - conan remote remove $CONAN_REMOTE_NAME
 
-Upload Fedora/Clang:
+Linux/Clang Package:
+  stage: Conan Binary Upload
   image: stabletec/build-core:fedora-clang
+  only:
+    - master
   tags:
     - linux
     - docker
-  <<: *upload_template
+  dependencies: []
+  before_script:
+    - conan remote add $CONAN_REMOTE_NAME $CONAN_REMOTE_ADDRESS
+    - conan user -r $CONAN_REMOTE_NAME -p $CONAN_PASSWORD $CONAN_USER
+  script:
+    - conan create . $CONAN_USER/$CI_COMMIT_REF_NAME --update --not-export --build outdated -s build_type=Debug -o *:shared=False
+    - conan create . $CONAN_USER/$CI_COMMIT_REF_NAME --update --not-export --build outdated -s build_type=Debug -o *:shared=True
+    - conan create . $CONAN_USER/$CI_COMMIT_REF_NAME --update --not-export --build outdated -s build_type=Release -o *:shared=False
+    - conan create . $CONAN_USER/$CI_COMMIT_REF_NAME --update --not-export --build outdated -s build_type=Release -o *:shared=True
+    - conan upload -r $CONAN_REMOTE_NAME --confirm --check --all stec_concurrent/*@$CONAN_USER/$CI_COMMIT_REF_NAME
+  after_script:
+    - conan user --clean
+    - conan remote remove $CONAN_REMOTE_NAME
 
-Upload CentOS/GCC:
+CentOS/GCC Package:
+  stage: Conan Binary Upload
   image: stabletec/build-core:centos-gcc
+  only:
+    - master
   tags:
     - linux
     - docker
-  <<: *upload_template
+  dependencies: []
+  before_script:
+    - conan remote add $CONAN_REMOTE_NAME $CONAN_REMOTE_ADDRESS
+    - conan user -r $CONAN_REMOTE_NAME -p $CONAN_PASSWORD $CONAN_USER
+  script:
+    - conan create . $CONAN_USER/$CI_COMMIT_REF_NAME --update --not-export --build outdated -s build_type=Debug -o *:shared=False
+    - conan create . $CONAN_USER/$CI_COMMIT_REF_NAME --update --not-export --build outdated -s build_type=Debug -o *:shared=True
+    - conan create . $CONAN_USER/$CI_COMMIT_REF_NAME --update --not-export --build outdated -s build_type=Release -o *:shared=False
+    - conan create . $CONAN_USER/$CI_COMMIT_REF_NAME --update --not-export --build outdated -s build_type=Release -o *:shared=True
+    - conan upload -r $CONAN_REMOTE_NAME --confirm --check --all stec_concurrent/*@$CONAN_USER/$CI_COMMIT_REF_NAME
+  after_script:
+    - conan user --clean
+    - conan remote remove $CONAN_REMOTE_NAME
 
-Upload Windows/MSVC2017:
-  stage: Packaging
+Windows/MSVC2017 Package:
+  stage: Conan Binary Upload
+  only:
+    - master
   tags:
     - windows
     - msvc2017
+  dependencies: []
   before_script:
-    - conan user -r %CONAN_REMOTE_NAME% -p "%CONAN_PASSWORD%" %CONAN_USER%
-    - conan remove --force mariadb-connector*@%CONAN_USER%/%CI_COMMIT_REF_NAME%
     - call %MSVC2017_BUILD_TOOLS%
+    - conan remote add %CONAN_REMOTE_NAME% %CONAN_REMOTE_ADDRESS%
+    - conan user -r %CONAN_REMOTE_NAME% -p "%CONAN_PASSWORD%" %CONAN_USER%
+    - conan remove --force stec_concurrent/*@%CONAN_USER%/%CI_COMMIT_REF_NAME%
   script:
-    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --update -ne --build outdated -s build_type=Debug -s compiler.runtime=MDd -o *:shared=True
-    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --update -ne --build outdated -s build_type=Debug -s compiler.runtime=MTd
-    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --update -ne --build outdated -s build_type=Debug -s compiler.runtime=MD -o *:shared=True
-    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --update -ne --build outdated -s build_type=Debug -s compiler.runtime=MT
-    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --update -ne --build outdated -s build_type=Release -s compiler.runtime=MDd -o *:shared=True
-    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --update -ne --build outdated -s build_type=Release -s compiler.runtime=MTd
-    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --update -ne --build outdated -s build_type=Release -s compiler.runtime=MD -o *:shared=True
-    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --update -ne --build outdated -s build_type=Release -s compiler.runtime=MT
-    - conan upload -r %CONAN_REMOTE_NAME% --confirm --check -no recipe --all mariadb-connector/*@%CONAN_USER%/%CI_COMMIT_REF_NAME%
+    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --update --not-export --build outdated -s build_type=Debug -s compiler.runtime=MDd -o *:shared=True
+    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --update --not-export --build outdated -s build_type=Debug -s compiler.runtime=MTd -o *:shared=False
+    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --update --not-export --build outdated -s build_type=Debug -s compiler.runtime=MD -o *:shared=True
+    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --update --not-export --build outdated -s build_type=Debug -s compiler.runtime=MT -o *:shared=False
+    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --update --not-export --build outdated -s build_type=Release -s compiler.runtime=MDd -o *:shared=True
+    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --update --not-export --build outdated -s build_type=Release -s compiler.runtime=MTd -o *:shared=False
+    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --update --not-export --build outdated -s build_type=Release -s compiler.runtime=MD -o *:shared=True
+    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --update --not-export --build outdated -s build_type=Release -s compiler.runtime=MT -o *:shared=False
+    - conan upload -r %CONAN_REMOTE_NAME% --confirm --check --all stec_concurrent/*@%CONAN_USER%/%CI_COMMIT_REF_NAME%
+  after_script:
+    - conan user --clean
+    - conan remote remove %CONAN_REMOTE_NAME%
 
-.Upload Windows/GCC:
-  stage: Packaging
+.Windows/GCC Package:
+  stage: Conan Binary Upload
+  only:
+    - master
   tags:
     - windows
     - gcc
+  dependencies: []
   before_script:
-    - conan user -r $CONAN_REMOTE_NAME -p "%CONAN_PASSWORD%" %CONAN_USER%
-    - conan remove --force mariadb-connector*@%CONAN_USER%/%CI_COMMIT_REF_NAME%
+    - conan remote add %CONAN_REMOTE_NAME% %CONAN_REMOTE_ADDRESS%
+    - conan user -r %CONAN_REMOTE_NAME% -p "%CONAN_PASSWORD%" %CONAN_USER%
+    - conan remove --force stec_concurrent/*@%CONAN_USER%/%CI_COMMIT_REF_NAME%
   script:
-    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --update -ne --build outdated -s build_type=Debug -o *:shared=False
-    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --update -ne --build outdated -s build_type=Debug -o *:shared=True
-    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --update -ne --build outdated -s build_type=Release -o *:shared=False
-    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --update -ne --build outdated -s build_type=Release -o *:shared=True 
-    - conan upload -r %CONAN_REMOTE_NAME% --confirm --check -no recipe --all mariadb-connector/*@%CONAN_USER%/%CI_COMMIT_REF_NAME%
+    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --update --not-export --build outdated -s build_type=Debug -o *:shared=False
+    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --update --not-export --build outdated -s build_type=Debug -o *:shared=True
+    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --update --not-export --build outdated -s build_type=Release -o *:shared=False
+    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --update --not-export --build outdated -s build_type=Release -o *:shared=True
+    - conan upload -r %CONAN_REMOTE_NAME% --confirm --check --all stec_concurrent/*@%CONAN_USER%/%CI_COMMIT_REF_NAME%
+  after_script:
+    - conan user --clean
+    - conan remote remove %CONAN_REMOTE_NAME%
 
-.Upload Windows/Clang:
-  stage: Packaging
+.Windows/Clang Package:
+  stage: Conan Binary Upload
+  only:
+    - master
   tags:
     - windows
     - clang
+  dependencies: []
   before_script:
-    - conan user -r $CONAN_REMOTE_NAME -p "%CONAN_PASSWORD%" %CONAN_USER%
-    - conan remove --force mariadb-connector*@%CONAN_USER%/%CI_COMMIT_REF_NAME%
+    - conan remote add %CONAN_REMOTE_NAME% %CONAN_REMOTE_ADDRESS%
+    - conan user -r %CONAN_REMOTE_NAME% -p "%CONAN_PASSWORD%" %CONAN_USER%
+    - conan remove --force stec_concurrent/*@%CONAN_USER%/%CI_COMMIT_REF_NAME%
   script:
-    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --update -ne --build outdated -s build_type=Debug -o *:shared=False
-    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --update -ne --build outdated -s build_type=Debug -o *:shared=True
-    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --update -ne --build outdated -s build_type=Release -o *:shared=False
-    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --update -ne --build outdated -s build_type=Release -o *:shared=True
-    - conan upload -r %CONAN_REMOTE_NAME% --confirm --check -no recipe --all mariadb-connector/*@%CONAN_USER%/%CI_COMMIT_REF_NAME%
+    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --update --not-export --build outdated -s build_type=Debug -o *:shared=False
+    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --update --not-export --build outdated -s build_type=Debug -o *:shared=True
+    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --update --not-export --build outdated -s build_type=Release -o *:shared=False
+    - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --update --not-export --build outdated -s build_type=Release -o *:shared=True
+    - conan upload -r %CONAN_REMOTE_NAME% --confirm --check --all stec_concurrent/*@%CONAN_USER%/%CI_COMMIT_REF_NAME%
+  after_script:
+    - conan user --clean
+    - conan remote remove %CONAN_REMOTE_NAME%
