@@ -68,7 +68,7 @@ Windows/MSVC2017 Build:
     - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --build missing -s build_type=Release -s compiler.runtime=MD -o *:shared=True
     - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --build missing -s build_type=Release -s compiler.runtime=MT -o *:shared=False
 
-Windows/GCC Build:
+.Windows/GCC Build:
   stage: Conan Test Build
   tags:
     - windows
@@ -80,7 +80,7 @@ Windows/GCC Build:
     - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --build missing -s build_type=Release -o *:shared=False
     - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --build missing -s build_type=Release -o *:shared=True
 
-Windows/Clang Build:
+.Windows/Clang Build:
   stage: Conan Test Build
   tags:
     - windows
@@ -212,7 +212,7 @@ Windows/MSVC2017 Package:
     - conan user --clean
     - conan remote remove %CONAN_REMOTE_NAME%
 
-Windows/GCC Package:
+.Windows/GCC Package:
   stage: Conan Binary Upload
   only:
     - master
@@ -234,7 +234,7 @@ Windows/GCC Package:
     - conan user --clean
     - conan remote remove %CONAN_REMOTE_NAME%
 
-Windows/Clang Package:
+.Windows/Clang Package:
   stage: Conan Binary Upload
   only:
     - master
