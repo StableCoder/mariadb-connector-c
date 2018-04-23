@@ -40,8 +40,8 @@ conan_basic_setup()''')
 
     def package(self):
         include_folder = "{0}/include".format(self.source_subfolder)
-        self.copy("*.h", dst="include", src=include_folder)
-        self.copy("*.h", dst="include", src="include")
+        self.copy("*.h", dst="include/mysql", src=include_folder)
+        self.copy("*.h", dst="include/mysql", src="include")
         self.copy("*.lib", dst="lib", keep_path=False)
         self.copy("*.dll", dst="bin", keep_path=False)
         self.copy("*.so", dst="lib", keep_path=False)

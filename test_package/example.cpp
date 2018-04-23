@@ -1,5 +1,5 @@
 #include <iostream>
-#include <mysql.h>
+#include <mysql/mysql.h>
 
 int main() {
   MYSQL *mysql = NULL;
