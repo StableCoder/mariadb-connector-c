@@ -110,7 +110,7 @@ Recipe Upload:
     - conan user -r $CONAN_REMOTE_NAME -p $CONAN_PASSWORD $CONAN_USER
   script:
     - conan export . $CONAN_USER/$CI_COMMIT_REF_NAME
-    - conan upload -r $CONAN_REMOTE_NAME --confirm --force stec_concurrent/*@$CONAN_USER/$CI_COMMIT_REF_NAME
+    - conan upload -r $CONAN_REMOTE_NAME --confirm --force mariadb-connector/*@$CONAN_USER/$CI_COMMIT_REF_NAME
   after_script:
     - conan user --clean
     - conan remote remove $CONAN_REMOTE_NAME
@@ -136,7 +136,7 @@ Linux/GCC Package:
     - conan create . $CONAN_USER/$CI_COMMIT_REF_NAME --update --not-export --build outdated -s build_type=Debug -o *:shared=True
     - conan create . $CONAN_USER/$CI_COMMIT_REF_NAME --update --not-export --build outdated -s build_type=Release -o *:shared=False
     - conan create . $CONAN_USER/$CI_COMMIT_REF_NAME --update --not-export --build outdated -s build_type=Release -o *:shared=True
-    - conan upload -r $CONAN_REMOTE_NAME --confirm --check --all stec_concurrent/*@$CONAN_USER/$CI_COMMIT_REF_NAME
+    - conan upload -r $CONAN_REMOTE_NAME --confirm --check --all mariadb-connector/*@$CONAN_USER/$CI_COMMIT_REF_NAME
   after_script:
     - conan user --clean
     - conan remote remove $CONAN_REMOTE_NAME
@@ -158,7 +158,7 @@ Linux/Clang Package:
     - conan create . $CONAN_USER/$CI_COMMIT_REF_NAME --update --not-export --build outdated -s build_type=Debug -o *:shared=True
     - conan create . $CONAN_USER/$CI_COMMIT_REF_NAME --update --not-export --build outdated -s build_type=Release -o *:shared=False
     - conan create . $CONAN_USER/$CI_COMMIT_REF_NAME --update --not-export --build outdated -s build_type=Release -o *:shared=True
-    - conan upload -r $CONAN_REMOTE_NAME --confirm --check --all stec_concurrent/*@$CONAN_USER/$CI_COMMIT_REF_NAME
+    - conan upload -r $CONAN_REMOTE_NAME --confirm --check --all mariadb-connector/*@$CONAN_USER/$CI_COMMIT_REF_NAME
   after_script:
     - conan user --clean
     - conan remote remove $CONAN_REMOTE_NAME
@@ -180,7 +180,7 @@ CentOS/GCC Package:
     - conan create . $CONAN_USER/$CI_COMMIT_REF_NAME --update --not-export --build outdated -s build_type=Debug -o *:shared=True
     - conan create . $CONAN_USER/$CI_COMMIT_REF_NAME --update --not-export --build outdated -s build_type=Release -o *:shared=False
     - conan create . $CONAN_USER/$CI_COMMIT_REF_NAME --update --not-export --build outdated -s build_type=Release -o *:shared=True
-    - conan upload -r $CONAN_REMOTE_NAME --confirm --check --all stec_concurrent/*@$CONAN_USER/$CI_COMMIT_REF_NAME
+    - conan upload -r $CONAN_REMOTE_NAME --confirm --check --all mariadb-connector/*@$CONAN_USER/$CI_COMMIT_REF_NAME
   after_script:
     - conan user --clean
     - conan remote remove $CONAN_REMOTE_NAME
@@ -197,7 +197,7 @@ Windows/MSVC2017 Package:
     - call %MSVC2017_BUILD_TOOLS%
     - conan remote add %CONAN_REMOTE_NAME% %CONAN_REMOTE_ADDRESS%
     - conan user -r %CONAN_REMOTE_NAME% -p "%CONAN_PASSWORD%" %CONAN_USER%
-    - conan remove --force stec_concurrent/*@%CONAN_USER%/%CI_COMMIT_REF_NAME%
+    - conan remove --force mariadb-connector/*@%CONAN_USER%/%CI_COMMIT_REF_NAME%
   script:
     - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --update --not-export --build outdated -s build_type=Debug -s compiler.runtime=MDd -o *:shared=True
     - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --update --not-export --build outdated -s build_type=Debug -s compiler.runtime=MTd -o *:shared=False
@@ -207,7 +207,7 @@ Windows/MSVC2017 Package:
     - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --update --not-export --build outdated -s build_type=Release -s compiler.runtime=MTd -o *:shared=False
     - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --update --not-export --build outdated -s build_type=Release -s compiler.runtime=MD -o *:shared=True
     - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --update --not-export --build outdated -s build_type=Release -s compiler.runtime=MT -o *:shared=False
-    - conan upload -r %CONAN_REMOTE_NAME% --confirm --check --all stec_concurrent/*@%CONAN_USER%/%CI_COMMIT_REF_NAME%
+    - conan upload -r %CONAN_REMOTE_NAME% --confirm --check --all mariadb-connector/*@%CONAN_USER%/%CI_COMMIT_REF_NAME%
   after_script:
     - conan user --clean
     - conan remote remove %CONAN_REMOTE_NAME%
@@ -223,13 +223,13 @@ Windows/MSVC2017 Package:
   before_script:
     - conan remote add %CONAN_REMOTE_NAME% %CONAN_REMOTE_ADDRESS%
     - conan user -r %CONAN_REMOTE_NAME% -p "%CONAN_PASSWORD%" %CONAN_USER%
-    - conan remove --force stec_concurrent/*@%CONAN_USER%/%CI_COMMIT_REF_NAME%
+    - conan remove --force mariadb-connector/*@%CONAN_USER%/%CI_COMMIT_REF_NAME%
   script:
     - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --update --not-export --build outdated -s build_type=Debug -o *:shared=False
     - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --update --not-export --build outdated -s build_type=Debug -o *:shared=True
     - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --update --not-export --build outdated -s build_type=Release -o *:shared=False
     - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --update --not-export --build outdated -s build_type=Release -o *:shared=True
-    - conan upload -r %CONAN_REMOTE_NAME% --confirm --check --all stec_concurrent/*@%CONAN_USER%/%CI_COMMIT_REF_NAME%
+    - conan upload -r %CONAN_REMOTE_NAME% --confirm --check --all mariadb-connector/*@%CONAN_USER%/%CI_COMMIT_REF_NAME%
   after_script:
     - conan user --clean
     - conan remote remove %CONAN_REMOTE_NAME%
@@ -245,13 +245,13 @@ Windows/MSVC2017 Package:
   before_script:
     - conan remote add %CONAN_REMOTE_NAME% %CONAN_REMOTE_ADDRESS%
     - conan user -r %CONAN_REMOTE_NAME% -p "%CONAN_PASSWORD%" %CONAN_USER%
-    - conan remove --force stec_concurrent/*@%CONAN_USER%/%CI_COMMIT_REF_NAME%
+    - conan remove --force mariadb-connector/*@%CONAN_USER%/%CI_COMMIT_REF_NAME%
   script:
     - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --update --not-export --build outdated -s build_type=Debug -o *:shared=False
     - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --update --not-export --build outdated -s build_type=Debug -o *:shared=True
     - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --update --not-export --build outdated -s build_type=Release -o *:shared=False
     - conan create . %CONAN_USER%/%CI_COMMIT_REF_NAME% --update --not-export --build outdated -s build_type=Release -o *:shared=True
-    - conan upload -r %CONAN_REMOTE_NAME% --confirm --check --all stec_concurrent/*@%CONAN_USER%/%CI_COMMIT_REF_NAME%
+    - conan upload -r %CONAN_REMOTE_NAME% --confirm --check --all mariadb-connector/*@%CONAN_USER%/%CI_COMMIT_REF_NAME%
   after_script:
     - conan user --clean
     - conan remote remove %CONAN_REMOTE_NAME%
