@@ -9,6 +9,7 @@
 [![pipeline status](http://git.stabletec.com/conan/mariadb-connector/badges/master/pipeline.svg)](http://git.stabletec.com/conan/mariadb-connector/commits/master)
 
 In order for the above badge to be marked as 'passed', the repository must build under all combinations of the following conditions:
+
 | OS         | Compiler  | Build Type    | Linker        | Runtime       |
 |------------|-----------|---------------|---------------|---------------|
 | Linux      | GCC/Clang | Debug/Release | Static/Shared |               |
