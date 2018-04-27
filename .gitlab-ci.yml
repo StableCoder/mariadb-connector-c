@@ -1,4 +1,5 @@
 # Required CI Environment Variables:
+# CONAN_UNSTABLE_REMOTE_ADDRESS - Where the unstable conan packages reside, to keep the stable server clean.
 # CONAN_REMOTE_ADDRESS - The primary conan remote address to upload content to.
 # CONAN_USER - The username to login to the remotes with, and also servers as the user for the package declaration.
 # CONAN_PASSWORD - The password for the user to to login with.
@@ -23,8 +24,8 @@ stages:
     - linux
     - docker
   script:
-    - conan remote add CI_Remote $CONAN_REMOTE_ADDRESS
-    - conan remove --force mariadb-connector/*@$ONAN_USER/$CHANNEL
+    - conan remote add CI_Remote $CONAN_JOB_REMOTE_ADDRESS
+    - conan remove --force mariadb-connector/*@$CONAN_USER/$CHANNEL
     - conan export . $CONAN_USER/$CHANNEL
     - conan user -r CI_Remote -p $CONAN_PASSWORD $CONAN_USER
     - conan upload -r CI_Remote --confirm --force mariadb-connector/*@$CONAN_USER/$CHANNEL
@@ -37,7 +38,7 @@ stages:
     - linux
     - docker
   script:
-    - conan remote add -i 0 CI_Remote $CONAN_REMOTE_ADDRESS
+    - conan remote add -i 0 CI_Remote $CONAN_JOB_REMOTE_ADDRESS
     - conan remove --outdated --force mariadb-connector/*@$CONAN_USER/$CHANNEL
     - conan create . $CONAN_USER/$CHANNEL --update --not-export --build missing -s build_type=Debug -o mariadb-connector:shared=False
     - conan create . $CONAN_USER/$CHANNEL --update --not-export --build missing -s build_type=Debug -o mariadb-connector:shared=True
@@ -52,7 +53,7 @@ stages:
 .windows_msvc_upload_template: &windows_msvc_upload_template
   script:
     - call %MSVC_ENV_SETUP%
-    - conan remote add -i 0 CI_Remote %CONAN_REMOTE_ADDRESS%
+    - conan remote add -i 0 CI_Remote %CONAN_JOB_REMOTE_ADDRESS%
     - conan remove --outdated --force mariadb-connector/*@%CONAN_USER%/%CHANNEL%
     - conan create . %CONAN_USER%/%CHANNEL% --update --not-export --build missing -s build_type=Debug -s compiler.runtime=MDd -o mariadb-connector:shared=True
     - conan create . %CONAN_USER%/%CHANNEL% --update --not-export --build missing -s build_type=Debug -s compiler.runtime=MTd -o mariadb-connector:shared=False
@@ -70,7 +71,7 @@ stages:
 
 .windows_upload_template: &windows_upload_template
   script:
-    - conan remote add -i 0 CI_Remote %CONAN_REMOTE_ADDRESS%
+    - conan remote add -i 0 CI_Remote %CONAN_JOB_REMOTE_ADDRESS%
     - conan remove --outdated --force mariadb-connector/*@%CONAN_USER%/%CHANNEL%
     - conan create . %CONAN_USER%/%CHANNEL% --update --not-export --build missing -s build_type=Debug -o mariadb-connector:shared=False
     - conan create . %CONAN_USER%/%CHANNEL% --update --not-export --build missing -s build_type=Debug -o mariadb-connector:shared=True
@@ -89,6 +90,7 @@ stages:
 Recipe Upload Unstable:
   stage: Unstable Recipe Upload
   variables:
+    CONAN_JOB_REMOTE_ADDRESS: $CONAN_UNSTABLE_REMOTE_ADDRESS
     CHANNEL: $CI_COMMIT_REF_NAME
   <<: *recipe_upload_template
 
@@ -100,6 +102,7 @@ Fedora/GCC Unstable:
   stage: Unstable Binary Upload
   image: stabletec/build-core:fedora-gcc
   variables:
+    CONAN_JOB_REMOTE_ADDRESS: $CONAN_UNSTABLE_REMOTE_ADDRESS
     CHANNEL: $CI_COMMIT_REF_NAME
   <<: *unix_upload_template
 
@@ -107,13 +110,7 @@ Fedora/Clang Unstable:
   stage: Unstable Binary Upload
   image: stabletec/build-core:fedora-clang
   variables:
-    CHANNEL: $CI_COMMIT_REF_NAME
-  <<: *unix_upload_template
-
-CentOS/GCC Unstable:
-  stage: Unstable Binary Upload
-  image: stabletec/build-core:centos-gcc
-  variables:
+    CONAN_JOB_REMOTE_ADDRESS: $CONAN_UNSTABLE_REMOTE_ADDRESS
     CHANNEL: $CI_COMMIT_REF_NAME
   <<: *unix_upload_template
 
@@ -123,6 +120,7 @@ Windows/MSVC2017 Unstable:
     - windows
     - msvc2017
   variables:
+    CONAN_JOB_REMOTE_ADDRESS: $CONAN_UNSTABLE_REMOTE_ADDRESS
     CHANNEL: $CI_COMMIT_REF_NAME
   <<: *windows_msvc_upload_template
 
@@ -132,6 +130,7 @@ Windows/MSVC2017 Unstable:
     - windows
     - gcc
   variables:
+    CONAN_JOB_REMOTE_ADDRESS: $CONAN_UNSTABLE_REMOTE_ADDRESS
     CHANNEL: $CI_COMMIT_REF_NAME
   <<: *windows_upload_template
 
@@ -141,6 +140,7 @@ Windows/MSVC2017 Unstable:
     - windows
     - clang
   variables:
+    CONAN_JOB_REMOTE_ADDRESS: $CONAN_UNSTABLE_REMOTE_ADDRESS
     CHANNEL: $CI_COMMIT_REF_NAME
   <<: *windows_upload_template
 
@@ -153,6 +153,7 @@ Recipe Upload Stable:
   only:
     - master
   variables:
+    CONAN_JOB_REMOTE_ADDRESS: $CONAN_REMOTE_ADDRESS
     CHANNEL: stable
   <<: *recipe_upload_template
 
@@ -166,6 +167,7 @@ Fedora/GCC Stable:
   only:
     - master
   variables:
+    CONAN_JOB_REMOTE_ADDRESS: $CONAN_REMOTE_ADDRESS
     CHANNEL: stable
   <<: *unix_upload_template
 
@@ -175,15 +177,7 @@ Fedora/Clang Stable:
   only:
     - master
   variables:
-    CHANNEL: stable
-  <<: *unix_upload_template
-
-CentOS/GCC Stable:
-  stage: Stable Binary Upload
-  image: stabletec/build-core:centos-gcc
-  only:
-    - master
-  variables:
+    CONAN_JOB_REMOTE_ADDRESS: $CONAN_REMOTE_ADDRESS
     CHANNEL: stable
   <<: *unix_upload_template
 
@@ -195,6 +189,7 @@ Windows/MSVC2017 Stable:
     - windows
     - msvc2017
   variables:
+    CONAN_JOB_REMOTE_ADDRESS: $CONAN_REMOTE_ADDRESS
     CHANNEL: stable
   <<: *windows_msvc_upload_template
 
@@ -206,6 +201,7 @@ Windows/MSVC2017 Stable:
     - windows
     - gcc
   variables:
+    CONAN_JOB_REMOTE_ADDRESS: $CONAN_REMOTE_ADDRESS
     CHANNEL: stable
   <<: *windows_upload_template
 
@@ -217,5 +213,6 @@ Windows/MSVC2017 Stable:
     - windows
     - clang
   variables:
+    CONAN_JOB_REMOTE_ADDRESS: $CONAN_REMOTE_ADDRESS
     CHANNEL: stable
   <<: *windows_upload_template
