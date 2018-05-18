@@ -94,6 +94,22 @@ Recipe Upload Unstable:
 # Unstable Binary Upload #
 ##########################
 
+CentOS/GCC Unstable:
+  stage: Unstable Binary Upload
+  image: stabletec/build-core:centos-gcc
+  variables:
+    CONAN_JOB_REMOTE_ADDRESS: $CONAN_UNSTABLE_REMOTE_ADDRESS
+    CHANNEL: $CI_COMMIT_REF_NAME
+  <<: *unix_upload_template
+
+.CentOS/Clang Unstable:
+  stage: Unstable Binary Upload
+  image: stabletec/build-core:centos-clang
+  variables:
+    CONAN_JOB_REMOTE_ADDRESS: $CONAN_UNSTABLE_REMOTE_ADDRESS
+    CHANNEL: $CI_COMMIT_REF_NAME
+  <<: *unix_upload_template
+
 Fedora/GCC Unstable:
   stage: Unstable Binary Upload
   image: stabletec/build-core:fedora27-gcc
@@ -156,6 +172,26 @@ Recipe Upload Stable:
 ########################
 # Stable Binary Upload #
 ########################
+
+CentOS/GCC Stable:
+  stage: Stable Binary Upload
+  image: stabletec/build-core:centos-gcc
+  only:
+    - tags
+  variables:
+    CONAN_JOB_REMOTE_ADDRESS: $CONAN_REMOTE_ADDRESS
+    CHANNEL: stable
+  <<: *unix_upload_template
+
+CentOS/Clang Stable:
+  stage: Stable Binary Upload
+  image: stabletec/build-core:centos-clang
+  only:
+    - tags
+  variables:
+    CONAN_JOB_REMOTE_ADDRESS: $CONAN_REMOTE_ADDRESS
+    CHANNEL: stable
+  <<: *unix_upload_template
 
 Fedora/GCC Stable:
   stage: Stable Binary Upload
