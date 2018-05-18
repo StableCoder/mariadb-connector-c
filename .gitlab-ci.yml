@@ -19,7 +19,7 @@ stages:
 #############
 
 .recipe_upload_template: &recipe_upload_template
-  image: stabletec/alpine:conan
+  image: stabletec/conan:latest
   tags:
     - linux
     - docker
@@ -100,7 +100,7 @@ Recipe Upload Unstable:
 
 Fedora/GCC Unstable:
   stage: Unstable Binary Upload
-  image: stabletec/build-core:fedora-gcc
+  image: stabletec/build-core:fedora27-gcc
   variables:
     CONAN_JOB_REMOTE_ADDRESS: $CONAN_UNSTABLE_REMOTE_ADDRESS
     CHANNEL: $CI_COMMIT_REF_NAME
@@ -108,7 +108,7 @@ Fedora/GCC Unstable:
 
 Fedora/Clang Unstable:
   stage: Unstable Binary Upload
-  image: stabletec/build-core:fedora-clang
+  image: stabletec/build-core:fedora27-clang
   variables:
     CONAN_JOB_REMOTE_ADDRESS: $CONAN_UNSTABLE_REMOTE_ADDRESS
     CHANNEL: $CI_COMMIT_REF_NAME
@@ -163,7 +163,7 @@ Recipe Upload Stable:
 
 Fedora/GCC Stable:
   stage: Stable Binary Upload
-  image: stabletec/build-core:fedora-gcc
+  image: stabletec/build-core:fedora27-gcc
   only:
     - master
   variables:
@@ -173,7 +173,7 @@ Fedora/GCC Stable:
 
 Fedora/Clang Stable:
   stage: Stable Binary Upload
-  image: stabletec/build-core:fedora-clang
+  image: stabletec/build-core:fedora27-clang
   only:
     - master
   variables:
