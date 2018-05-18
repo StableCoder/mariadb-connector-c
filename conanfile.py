@@ -11,7 +11,7 @@ class MariadbConnectorConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     options = {"shared": [True, False], "fPIC": [True, False]}
     default_options = "shared=False", "fPIC=True"
-    requires = "zlib/1.2.11@conan/stable"
+    requires = "zlib/1.2.11@conan/stable", "OpenSSL/1.0.2o@conan/stable"
     generators = "cmake"
     source_subfolder = "source_subfolder"
 
@@ -34,7 +34,7 @@ conan_basic_setup()''')
         if self.settings.os != "Windows":
             cmake.definitions["WITH_EXTERNAL_ZLIB"] = True
             cmake.definitions["CMAKE_POSITION_INDEPENDENT_CODE"] = self.options.fPIC
-        cmake.definitions["WITH_UNITTEST"] = False
+        cmake.definitions["WITH_UNIT_TESTS"] = False
         cmake.configure(source_folder=self.source_subfolder)
         cmake.build()
 
