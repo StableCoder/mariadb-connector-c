@@ -9,9 +9,8 @@ class MariadbConnectorConan(ConanFile):
     url = "https://github.com/StableCoder/conan-mariadb-connector"
     description = "MariaDB Connector/C is used to connect applications developed in C/C++ to MariaDB and MySQL databases."
     settings = "os", "compiler", "build_type", "arch"
-    options = {"shared": [True, False], "fPIC": [True, False], "no_zlib": [True, False]}
-    default_options = "shared=False", "fPIC=True", "no_zlib=False"
-    requires = "OpenSSL/1.0.2o@conan/stable"
+    options = {"shared": [True, False], "fPIC": [True, False], "no_zlib": [True, False], "no_ssl": [True, False]}
+    default_options = "shared=False", "fPIC=True", "no_zlib=False", "no_ssl=False"
     generators = "cmake"
     source_subfolder = "source_subfolder"
 
@@ -30,6 +29,8 @@ conan_basic_setup()''')
             self.options.remove("fPIC")
 
     def requirements(self):
+        if not self.options.no_ssl:
+            self.requires("OpenSSL/1.0.2o@conan/stable")
         if not self.options.no_zlib:
             self.requires("zlib/1.2.11@conan/stable")
 
@@ -39,6 +40,8 @@ conan_basic_setup()''')
             cmake.definitions["CMAKE_POSITION_INDEPENDENT_CODE"] = self.options.fPIC
         if not self.options.no_zlib:
             cmake.definitions["WITH_EXTERNAL_ZLIB"] = True
+        if self.options.no_ssl:
+            cmake.definitions["WITH_SSL"] = False
         cmake.definitions["WITH_UNIT_TESTS"] = False
         cmake.configure(source_folder=self.source_subfolder)
         cmake.build()
