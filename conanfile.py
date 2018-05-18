@@ -9,8 +9,9 @@ class MariadbConnectorConan(ConanFile):
     url = "https://github.com/StableCoder/conan-mariadb-connector"
     description = "MariaDB Connector/C is used to connect applications developed in C/C++ to MariaDB and MySQL databases."
     settings = "os", "compiler", "build_type", "arch"
-    options = {"shared": [True, False], "fPIC": [True, False], "no_zlib": [True, False], "no_ssl": [True, False]}
-    default_options = "shared=False", "fPIC=True", "no_zlib=False", "no_ssl=False"
+    options = {"shared": [True, False], "fPIC": [
+        True, False], "no_zlib": [True, False], "no_ssl": [True, False]}
+    default_options = "shared=False", "fPIC=True", "no_zlib=True", "no_ssl=False"
     generators = "cmake"
     source_subfolder = "source_subfolder"
 
