@@ -40,10 +40,10 @@ stages:
   script:
     - conan remote add -i 0 CI_Remote $CONAN_JOB_REMOTE_ADDRESS
     - conan remove --outdated --force mariadb-connector/*@$CONAN_USER/$CHANNEL
-    - conan create . $CONAN_USER/$CHANNEL --update --not-export --build outdated -s build_type=Debug -o mariadb-connector:shared=False
-    - conan create . $CONAN_USER/$CHANNEL --update --not-export --build outdated -s build_type=Debug -o mariadb-connector:shared=True
-    - conan create . $CONAN_USER/$CHANNEL --update --not-export --build outdated -s build_type=Release -o mariadb-connector:shared=False
-    - conan create . $CONAN_USER/$CHANNEL --update --not-export --build outdated -s build_type=Release -o mariadb-connector:shared=True
+    - conan create . $CONAN_USER/$CHANNEL --update --not-export --build outdated -s build_type=Debug
+    - conan create . $CONAN_USER/$CHANNEL --update --not-export --build outdated -s build_type=Debug
+    - conan create . $CONAN_USER/$CHANNEL --update --not-export --build outdated -s build_type=Release
+    - conan create . $CONAN_USER/$CHANNEL --update --not-export --build outdated -s build_type=Release
     - conan user -r CI_Remote -p $CONAN_PASSWORD $CONAN_USER
     - conan upload -r CI_Remote --confirm --check --all mariadb-connector/*@$CONAN_USER/$CHANNEL
   after_script:
@@ -55,10 +55,10 @@ stages:
     - call %MSVC_ENV_SETUP%
     - conan remote add -i 0 CI_Remote %CONAN_JOB_REMOTE_ADDRESS%
     - conan remove --outdated --force mariadb-connector/*@%CONAN_USER%/%CHANNEL%
-    - conan create . %CONAN_USER%/%CHANNEL% --update --not-export --build outdated -s build_type=Debug -s compiler.runtime=MDd -o mariadb-connector:shared=True
-    - conan create . %CONAN_USER%/%CHANNEL% --update --not-export --build outdated -s build_type=Debug -s compiler.runtime=MTd -o mariadb-connector:shared=False
-    - conan create . %CONAN_USER%/%CHANNEL% --update --not-export --build outdated -s build_type=Release -s compiler.runtime=MD -o mariadb-connector:shared=True
-    - conan create . %CONAN_USER%/%CHANNEL% --update --not-export --build outdated -s build_type=Release -s compiler.runtime=MT -o mariadb-connector:shared=False
+    - conan create . %CONAN_USER%/%CHANNEL% --update --not-export --build outdated -s build_type=Debug -s compiler.runtime=MDd
+    - conan create . %CONAN_USER%/%CHANNEL% --update --not-export --build outdated -s build_type=Debug -s compiler.runtime=MTd
+    - conan create . %CONAN_USER%/%CHANNEL% --update --not-export --build outdated -s build_type=Release -s compiler.runtime=MD
+    - conan create . %CONAN_USER%/%CHANNEL% --update --not-export --build outdated -s build_type=Release -s compiler.runtime=MT
     - conan user -r CI_Remote -p "%CONAN_PASSWORD%" %CONAN_USER%
     - conan upload -r CI_Remote --confirm --check --all mariadb-connector/*@%CONAN_USER%/%CHANNEL%
   after_script:
@@ -69,10 +69,10 @@ stages:
   script:
     - conan remote add -i 0 CI_Remote %CONAN_JOB_REMOTE_ADDRESS%
     - conan remove --outdated --force mariadb-connector/*@%CONAN_USER%/%CHANNEL%
-    - conan create . %CONAN_USER%/%CHANNEL% --update --not-export --build outdated -s build_type=Debug -o mariadb-connector:shared=False
-    - conan create . %CONAN_USER%/%CHANNEL% --update --not-export --build outdated -s build_type=Debug -o mariadb-connector:shared=True
-    - conan create . %CONAN_USER%/%CHANNEL% --update --not-export --build outdated -s build_type=Release -o mariadb-connector:shared=False
-    - conan create . %CONAN_USER%/%CHANNEL% --update --not-export --build outdated -s build_type=Release -o mariadb-connector:shared=True
+    - conan create . %CONAN_USER%/%CHANNEL% --update --not-export --build outdated -s build_type=Debug
+    - conan create . %CONAN_USER%/%CHANNEL% --update --not-export --build outdated -s build_type=Debug
+    - conan create . %CONAN_USER%/%CHANNEL% --update --not-export --build outdated -s build_type=Release
+    - conan create . %CONAN_USER%/%CHANNEL% --update --not-export --build outdated -s build_type=Release
     - conan user -r CI_Remote -p "%CONAN_PASSWORD%" %CONAN_USER%
     - conan upload -r CI_Remote --confirm --check --all mariadb-connector/*@%CONAN_USER%/%CHANNEL%
   after_script:
