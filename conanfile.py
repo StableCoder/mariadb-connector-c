@@ -4,7 +4,7 @@ import os
 
 class MariadbConnectorConan(ConanFile):
     name = "mariadb-connector-c"
-    version = "3.0.3"
+    version = "3.0.2"
     license = "LGPL 2+"
     url = "https://github.com/StableCoder/conan-mariadb-connector"
     description = "MariaDB Connector/C is used to connect applications developed in C/C++ to MariaDB and MySQL databases."
