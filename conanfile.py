@@ -4,7 +4,7 @@ import os
 
 class MariadbConnectorConan(ConanFile):
     name = "mariadb-connector-c"
-    version = "3.0.4"
+    version = "3.0.3"
     license = "LGPL 2+"
     url = "https://github.com/StableCoder/conan-mariadb-connector"
     description = "MariaDB Connector/C is used to connect applications developed in C/C++ to MariaDB and MySQL databases."
@@ -42,7 +42,7 @@ conan_basic_setup()''')
 
     def build(self):
         cmake = CMake(self)
-        cmake.definitions["WITH_UNIT_TESTS"] = False
+        cmake.definitions["WITH_UNITTEST"] = False
         if self.settings.os != "Windows":
             cmake.definitions["CMAKE_POSITION_INDEPENDENT_CODE"] = True
         if not self.options.with_curl:
