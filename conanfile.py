@@ -14,7 +14,7 @@ class MariadbConnectorConan(ConanFile):
                 "with_dyncol": [True, False], 
                 "with_mysqlcompat": [True, False],
                 "with_ssl": [True, False]}
-    default_options = "with_curl=True", "with_dyncol=True", "with_external_zlib=False", "with_mysqlcompat=False", "with_ssl=True"
+    default_options = "with_curl=False", "with_dyncol=True", "with_external_zlib=False", "with_mysqlcompat=False", "with_ssl=True"
     generators = "cmake"
     source_subfolder = "source_subfolder"
 
