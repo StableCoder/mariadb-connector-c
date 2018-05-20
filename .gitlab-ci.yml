@@ -102,7 +102,7 @@ CentOS/GCC Unstable:
     CHANNEL: $CI_COMMIT_REF_NAME
   <<: *unix_upload_template
 
-.CentOS/Clang Unstable:
+CentOS/Clang Unstable:
   stage: Unstable Binary Upload
   image: stabletec/build-core:centos-clang
   variables:
