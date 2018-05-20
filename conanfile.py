@@ -3,17 +3,17 @@ import os
 
 
 class MariadbConnectorConan(ConanFile):
-    name = "mariadb-connector"
+    name = "mariadb-connector-c"
     version = "3.0.4"
     license = "LGPL 2+"
     url = "https://github.com/StableCoder/conan-mariadb-connector"
     description = "MariaDB Connector/C is used to connect applications developed in C/C++ to MariaDB and MySQL databases."
     settings = "os", "compiler", "build_type", "arch"
-    options = { "with_curl": [True, False],
-                "with_external_zlib": [True, False], 
-                "with_dyncol": [True, False], 
-                "with_mysqlcompat": [True, False],
-                "with_ssl": [True, False]}
+    options = {"with_curl": [True, False],
+               "with_external_zlib": [True, False],
+               "with_dyncol": [True, False],
+               "with_mysqlcompat": [True, False],
+               "with_ssl": [True, False]}
     default_options = "with_curl=False", "with_dyncol=True", "with_external_zlib=False", "with_mysqlcompat=False", "with_ssl=True"
     generators = "cmake"
     source_subfolder = "source_subfolder"

@@ -1,16 +1,17 @@
-[![pipeline status](http://git.stabletec.com/conan/mariadb-connector/badges/master/pipeline.svg)](http://git.stabletec.com/conan/mariadb-connector/commits/master)
+[![pipeline status](http://git.stabletec.com/conan/mariadb-c-connector/badges/latest/pipeline.svg)](http://git.stabletec.com/conan/mariadb-c-connector/commits/latest)
 
 # MariaDB-C-Connector
 
-[Conan](https://www.conan.io/) package for the [MariaDB C Connector](https://mariadb.com/kb/en/library/mariadb-connector-c/) library.
+[Conan](https://www.conan.io/) package for the [MariaDB Connector/C](https://mariadb.com/kb/en/library/mariadb-connector-c/) library.
 
 ## Build Matrix
 
-[![pipeline status](http://git.stabletec.com/conan/mariadb-connector/badges/master/pipeline.svg)](http://git.stabletec.com/conan/mariadb-connector/commits/master)
+[![pipeline status](http://git.stabletec.com/conan/mariadb-c-connector/badges/latest/pipeline.svg)](http://git.stabletec.com/conan/mariadb-c-connector/commits/latest)
 
 In order for the above badge to be marked as 'passed', the repository must build under all combinations of the following conditions:
 
-| OS         | Compiler  | Build Type    | Linker        | Runtime       |
-|------------|-----------|---------------|---------------|---------------|
-| Linux      | GCC/Clang | Debug/Release | Static/Shared |               |
-| Windows 10 | MSVC2017  | Debug/Release | Static/Shared | MDd/MD/MTd/MT |
+| OS         | Compiler  | Build Type    | Runtime |
+|:-----------|:----------|:--------------|:--------|
+| Linux      | GCC/Clang | Debug/Release |         |
+| Windows 10 | MSVC2017  | Debug         | MDd/MTd |
+| Windows 10 | MSVC2017  | Release       | MD/MT   |
