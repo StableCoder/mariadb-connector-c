@@ -21,22 +21,20 @@ stages:
 .recipe_upload_template: &recipe_upload_template
   image: stabletec/conan:latest
   tags:
-    - linux
-    - docker
+    - docker-linux
   script:
     - conan remote add CI_Remote $CONAN_JOB_REMOTE_ADDRESS
     - conan remove --force mariadb-connector-c/*@$CONAN_USER/$CHANNEL
     - conan export . $CONAN_USER/$CHANNEL
     - conan user -r CI_Remote -p $CONAN_PASSWORD $CONAN_USER
-    - conan upload -r CI_Remote --confirm --force mariadb-connector-c/*@$CONAN_USER/$CHANNEL
+    - conan upload -r CI_Remote --confirm mariadb-connector-c/*@$CONAN_USER/$CHANNEL
   after_script:
     - conan user --clean
     - conan remote remove CI_Remote
 
 .unix_upload_template: &unix_upload_template
   tags:
-    - linux
-    - docker
+    - docker-linux
   script:
     - conan remote add -i 0 CI_Remote $CONAN_JOB_REMOTE_ADDRESS
     - conan remove --outdated --force mariadb-connector-c/*@$CONAN_USER/$CHANNEL
@@ -94,6 +92,14 @@ Recipe Upload Unstable:
 # Unstable Binary Upload #
 ##########################
 
+CentOS6/GCC Unstable:
+  stage: Unstable Binary Upload
+  image: stabletec/build-core:centos6-gcc
+  variables:
+    CONAN_JOB_REMOTE_ADDRESS: $CONAN_UNSTABLE_REMOTE_ADDRESS
+    CHANNEL: $CI_COMMIT_REF_NAME
+  <<: *unix_upload_template
+
 CentOS/GCC Unstable:
   stage: Unstable Binary Upload
   image: stabletec/build-core:centos-gcc
@@ -112,7 +118,7 @@ CentOS/Clang Unstable:
 
 Fedora/GCC Unstable:
   stage: Unstable Binary Upload
-  image: stabletec/build-core:fedora27-gcc
+  image: stabletec/build-core:fedora-gcc
   variables:
     CONAN_JOB_REMOTE_ADDRESS: $CONAN_UNSTABLE_REMOTE_ADDRESS
     CHANNEL: $CI_COMMIT_REF_NAME
@@ -120,7 +126,7 @@ Fedora/GCC Unstable:
 
 Fedora/Clang Unstable:
   stage: Unstable Binary Upload
-  image: stabletec/build-core:fedora27-clang
+  image: stabletec/build-core:fedora-clang
   variables:
     CONAN_JOB_REMOTE_ADDRESS: $CONAN_UNSTABLE_REMOTE_ADDRESS
     CHANNEL: $CI_COMMIT_REF_NAME
@@ -173,6 +179,16 @@ Recipe Upload Stable:
 # Stable Binary Upload #
 ########################
 
+CentOS6/GCC Stable:
+  stage: Stable Binary Upload
+  image: stabletec/build-core:centos6-gcc
+  only:
+    - tags
+  variables:
+    CONAN_JOB_REMOTE_ADDRESS: $CONAN_REMOTE_ADDRESS
+    CHANNEL: stable
+  <<: *unix_upload_template
+
 CentOS/GCC Stable:
   stage: Stable Binary Upload
   image: stabletec/build-core:centos-gcc
@@ -195,7 +211,7 @@ CentOS/Clang Stable:
 
 Fedora/GCC Stable:
   stage: Stable Binary Upload
-  image: stabletec/build-core:fedora27-gcc
+  image: stabletec/build-core:fedora-gcc
   only:
     - tags
   variables:
@@ -205,7 +221,7 @@ Fedora/GCC Stable:
 
 Fedora/Clang Stable:
   stage: Stable Binary Upload
-  image: stabletec/build-core:fedora27-clang
+  image: stabletec/build-core:fedora-clang
   only:
     - tags
   variables:
