@@ -25,8 +25,8 @@ class MariadbConnectorConan(ConanFile):
             "mariadb-connector-c-{0}-src".format(self.version), self.source_subfolder)
         tools.replace_in_file("{0}/CMakeLists.txt".format(self.source_subfolder), "PROJECT(mariadb-connector-c C)",
                               '''PROJECT(mariadb-connector-c C)
-include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-conan_basic_setup()''')
+ include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+ conan_basic_setup()''')
 
     def config_options(self):
         if self.settings.os == "Windows":
@@ -34,7 +34,7 @@ conan_basic_setup()''')
 
     def requirements(self):
         if self.options.with_ssl:
-            self.requires("OpenSSL/1.0.2o@conan/stable")
+            self.requires("OpenSSL/1.1.0g@conan/stable")
         if self.options.with_external_zlib:
             self.requires("zlib/1.2.11@conan/stable")
         if self.options.with_curl:
