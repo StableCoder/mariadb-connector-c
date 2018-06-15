@@ -128,6 +128,7 @@ Recipe Upload Stable:
     - docker-linux
   script:
     - conan remote add -i 0 CI_Remote $CONAN_REMOTE_ADDRESS
+    - conan create . $CONAN_USER/stable --update --not-export --build outdated -s build_type=Debug
     - conan create . $CONAN_USER/stable --update --not-export --build outdated -s build_type=Release
     - conan user -r CI_Remote -p $CONAN_REMOTE_PASSWORD $CONAN_REMOTE_USER
     - conan upload -r CI_Remote --confirm --check --all mariadb-connector-c/*@$CONAN_USER/stable
@@ -141,6 +142,7 @@ Recipe Upload Stable:
   script:
     - conan remote add -i 0 CI_Remote %CONAN_REMOTE_ADDRESS%
     - conan remove --outdated --force mariadb-connector-c/*@%CONAN_USER%/stable
+    - conan create . %CONAN_USER%/stable --update --not-export --build outdated -s build_type=Debug
     - conan create . %CONAN_USER%/stable --update --not-export --build outdated -s build_type=Release
     - conan user -r CI_Remote -p "%CONAN_REMOTE_PASSWORD%" %CONAN_REMOTE_USER%
     - conan upload -r CI_Remote --confirm --check --all mariadb-connector-c/*@%CONAN_USER%/stable
@@ -186,6 +188,8 @@ Windows/MSVC2017 Stable:
     - call %MSVC_ENV_SETUP%
     - conan remote add -i 0 CI_Remote %CONAN_REMOTE_ADDRESS%
     - conan remove --outdated --force mariadb-connector-c/*@%CONAN_USER%/stable
+    - conan create . %CONAN_USER%/stable --update --not-export --build outdated -s build_type=Debug -s compiler.runtime=MDd
+    - conan create . %CONAN_USER%/stable --update --not-export --build outdated -s build_type=Debug -s compiler.runtime=MTd
     - conan create . %CONAN_USER%/stable --update --not-export --build outdated -s build_type=Release -s compiler.runtime=MD
     - conan create . %CONAN_USER%/stable --update --not-export --build outdated -s build_type=Release -s compiler.runtime=MT
     - conan user -r CI_Remote -p "%CONAN_REMOTE_PASSWORD%" %CONAN_REMOTE_USER%
