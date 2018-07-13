@@ -60,28 +60,41 @@ class MariadbConnectorConan(ConanFile):
 
     def package(self):
         include_folder = "{0}/include".format(self.source_subfolder)
-
-        self.copy("mariadb/*.h", dst="include/mariadb", src=include_folder)
-        self.copy("mysql*", dst="include/mariadb", src=include_folder)
-        self.copy("errmsg.h", dst="include/mariadb", src=include_folder)
-        self.copy("ma_list.h", dst="include/mariadb", src=include_folder)
-        self.copy("ma_pvio.h", dst="include/mariadb", src=include_folder)
-        self.copy("ma_tls.h", dst="include/mariadb", src=include_folder)
-        self.copy("mariadb_com.h", dst="include/mariadb", src=include_folder)
-        self.copy("mariadb_ctype.h", dst="include/mariadb", src=include_folder)
+        # Headers
+        self.copy("mariadb/*.h", dst="include/mysql", src=include_folder)
+        self.copy("mysql*", dst="include/mysql", src=include_folder)
+        self.copy("errmsg.h", dst="include/mysql", src=include_folder)
+        self.copy("ma_list.h", dst="include/mysql", src=include_folder)
+        self.copy("ma_pvio.h", dst="include/mysql", src=include_folder)
+        self.copy("ma_tls.h", dst="include/mysql", src=include_folder)
+        self.copy("mariadb_com.h", dst="include/mysql", src=include_folder)
+        self.copy("mariadb_ctype.h", dst="include/mysql", src=include_folder)
         self.copy("mariadb_dyncol.h",
-                  dst="include/mariadb", src=include_folder)
-        self.copy("mariadb_stmt.h", dst="include/mariadb", src=include_folder)
+                  dst="include/mysql", src=include_folder)
+        self.copy("mariadb_stmt.h", dst="include/mysql", src=include_folder)
         self.copy("mariadb_version.h",
-                  dst="include/mariadb", src="include")
-        self.copy("*.lib", dst="lib", keep_path=False)
-        self.copy("*.dll", dst="bin", keep_path=False)
+                  dst="include/mysql", src="include")
+        # dll
+        self.copy("*/lib*.dll", dst="bin", keep_path=False)
+        self.copy("*/auth_gssapi_client.dll",
+                  dst="bin/plugin", keep_path=False)
+        self.copy("*/dialog.dll", dst="bin/plugin", keep_path=False)
+        self.copy("*/mysql_clear_password.dll",
+                  dst="bin/plugin", keep_path=False)
+        self.copy("*/pvio_npipe.dll",
+                  dst="bin/plugin", keep_path=False)
+        self.copy("*/pvio_shmem.dll",
+                  dst="bin/plugin", keep_path=False)
+        self.copy("*/sha256_password.dll", dst="bin/plugin", keep_path=False)
+        # so
         self.copy("lib*.so", dst="lib", src="lib")
         self.copy("lib*.so.*", dst="lib", src="lib")
         self.copy("dialog.so", dst="lib/plugin", src="lib")
         self.copy("mysql_clear_password.so",
                   dst="lib/plugin", src="lib")
         self.copy("sha256_password.so", dst="lib/plugin", src="lib")
+        # Other
+        self.copy("*mariadb*.lib", dst="lib", keep_path=False)
         self.copy("*.dylib", dst="lib", keep_path=False)
         self.copy("*.a", dst="lib", keep_path=False)
 
