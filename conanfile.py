@@ -60,12 +60,28 @@ class MariadbConnectorConan(ConanFile):
 
     def package(self):
         include_folder = "{0}/include".format(self.source_subfolder)
-        self.copy("*.h", dst="include/mysql", src=include_folder)
-        self.copy("*.h", dst="include/mysql", src="include")
+
+        self.copy("mariadb/*.h", dst="include/mariadb", src=include_folder)
+        self.copy("mysql*", dst="include/mariadb", src=include_folder)
+        self.copy("errmsg.h", dst="include/mariadb", src=include_folder)
+        self.copy("ma_list.h", dst="include/mariadb", src=include_folder)
+        self.copy("ma_pvio.h", dst="include/mariadb", src=include_folder)
+        self.copy("ma_tls.h", dst="include/mariadb", src=include_folder)
+        self.copy("mariadb_com.h", dst="include/mariadb", src=include_folder)
+        self.copy("mariadb_ctype.h", dst="include/mariadb", src=include_folder)
+        self.copy("mariadb_dyncol.h",
+                  dst="include/mariadb", src=include_folder)
+        self.copy("mariadb_stmt.h", dst="include/mariadb", src=include_folder)
+        self.copy("mariadb_version.h",
+                  dst="include/mariadb", src="include")
         self.copy("*.lib", dst="lib", keep_path=False)
         self.copy("*.dll", dst="bin", keep_path=False)
-        self.copy("*.so", dst="lib", keep_path=False)
-        self.copy("*.so.*", dst="lib", keep_path=False)
+        self.copy("lib*.so", dst="lib", src="lib")
+        self.copy("lib*.so.*", dst="lib", src="lib")
+        self.copy("dialog.so", dst="lib/plugin", src="lib")
+        self.copy("mysql_clear_password.so",
+                  dst="lib/plugin", src="lib")
+        self.copy("sha256_password.so", dst="lib/plugin", src="lib")
         self.copy("*.dylib", dst="lib", keep_path=False)
         self.copy("*.a", dst="lib", keep_path=False)
 
