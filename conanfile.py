@@ -6,7 +6,7 @@ class MariadbConnectorConan(ConanFile):
     name = "mariadb-connector-c"
     version = "3.0.5"
     license = "LGPL 2+"
-    url = "https://github.com/StableCoder/conan-mariadb-connector"
+    url = "https://git.stabletec.com/conan/mariadb-connector-c"
     description = "MariaDB Connector/C is used to connect applications developed in C/C++ to MariaDB and MySQL databases."
     settings = "os", "compiler", "build_type", "arch"
     options = {"with_curl": [True, False],
@@ -74,32 +74,18 @@ class MariadbConnectorConan(ConanFile):
         self.copy("mariadb_stmt.h", dst="include/mysql", src=include_folder)
         self.copy("mariadb_version.h",
                   dst="include/mysql", src="include")
-        # dll
-        self.copy("*/lib*.dll", dst="bin", keep_path=False)
-        self.copy("*/auth_gssapi_client.dll",
-                  dst="bin/plugin", keep_path=False)
-        self.copy("*/dialog.dll", dst="bin/plugin", keep_path=False)
-        self.copy("*/mysql_clear_password.dll",
-                  dst="bin/plugin", keep_path=False)
-        self.copy("*/pvio_npipe.dll",
-                  dst="bin/plugin", keep_path=False)
-        self.copy("*/pvio_shmem.dll",
-                  dst="bin/plugin", keep_path=False)
-        self.copy("*/sha256_password.dll", dst="bin/plugin", keep_path=False)
-        # so
-        self.copy("lib*.so", dst="lib", src="lib")
-        self.copy("lib*.so.*", dst="lib", src="lib")
-        self.copy("dialog.so", dst="lib/plugin", src="lib")
-        self.copy("mysql_clear_password.so",
-                  dst="lib/plugin", src="lib")
-        self.copy("sha256_password.so", dst="lib/plugin", src="lib")
-        # Other
-        self.copy("*mariadb*.lib", dst="lib", keep_path=False)
+        # Libraries
+        self.copy("*.dll", dst="bin", src="bin")
+        self.copy("*.pdb", dst="bin", src="bin")
+        self.copy("libmariadb.lib", dst="lib", src="lib")
+        self.copy("mariadbclient.lib", dst="lib", src="lib")
         self.copy("*.dylib", dst="lib", keep_path=False)
+        self.copy("libmariadb.so*", dst="lib", src="lib")
+        self.copy("libmariadbclient.a", dst="lib", src="lib")
         self.copy("*.a", dst="lib", keep_path=False)
 
     def package_info(self):
         if self.settings.os == "Windows":
-            self.cpp_info.libs = tools.collect_libs(self)
+            self.cpp_info.libs = ["libmariadb", "mariadbclient"]
         else:
             self.cpp_info.libs = ["mariadb", "mariadbclient"]

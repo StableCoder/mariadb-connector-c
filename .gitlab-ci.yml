@@ -26,17 +26,6 @@ stages:
     - conan remote add -i 0 CI_Remote $CONAN_REMOTE_ADDRESS
     - conan create . $CONAN_USER/unstable --build outdated -s build_type=Debug
     - conan create . $CONAN_USER/unstable --build outdated -s build_type=Release
-  after_script:
-    - conan remote remove CI_Remote
-
-.windows_build_template: &windows_build_template
-  script:
-    - conan remote add -i 0 CI_Remote %CONAN_REMOTE_ADDRESS%
-    - conan remove --outdated --force mariadb-connector-c/*@%CONAN_USER%/unstable
-    - conan create . %CONAN_USER%/unstable --build outdated -s build_type=Debug
-    - conan create . %CONAN_USER%/unstable --build outdated -s build_type=Release
-  after_script:
-    - conan remote remove CI_Remote
 
 # Jobs #
 
@@ -71,29 +60,12 @@ Windows/MSVC2017 Unstable:
     - windows
     - msvc2017
   script:
-    - call %MSVC_ENV_SETUP%
-    - conan remote add -i 0 CI_Remote %CONAN_REMOTE_ADDRESS%
-    - conan remove --outdated --force mariadb-connector-c/*@%CONAN_USER%/unstable
-    - conan create . %CONAN_USER%/unstable --build outdated -s build_type=Debug -s compiler.runtime=MDd
-    - conan create . %CONAN_USER%/unstable --build outdated -s build_type=Debug -s compiler.runtime=MTd
-    - conan create . %CONAN_USER%/unstable --build outdated -s build_type=Release -s compiler.runtime=MD
-    - conan create . %CONAN_USER%/unstable --build outdated -s build_type=Release -s compiler.runtime=MT
-  after_script:
-    - conan remote remove CI_Remote
-
-.Windows/GCC Unstable:
-  stage: Build & Test
-  tags:
-    - windows
-    - gcc
-  <<: *windows_build_template
-
-.Windows/Clang Unstable:
-  stage: Build & Test
-  tags:
-    - windows
-    - clang
-  <<: *windows_build_template
+    - conan remote add -i 0 CI_Remote --force ${env:CONAN_REMOTE_ADDRESS}
+    - conan remove --outdated --force mariadb-connector-c/*@${env:CONAN_USER}/unstable
+    - conan create . ${env:CONAN_USER}/unstable --build outdated -s build_type=Debug -s compiler.runtime=MDd
+    - conan create . ${env:CONAN_USER}/unstable --build outdated -s build_type=Debug -s compiler.runtime=MTd
+    - conan create . ${env:CONAN_USER}/unstable --build outdated -s build_type=Release -s compiler.runtime=MD
+    - conan create . ${env:CONAN_USER}/unstable --build outdated -s build_type=Release -s compiler.runtime=MT
 
 ##############################
 # Stable Recipe Upload Stage #
@@ -134,21 +106,6 @@ Recipe Upload Stable:
     - conan upload -r CI_Remote --confirm --check --all mariadb-connector-c/*@$CONAN_USER/stable
   after_script:
     - conan user --clean
-    - conan remote remove CI_Remote
-
-.windows_upload_template: &windows_upload_template
-  only:
-    - tags
-  script:
-    - conan remote add -i 0 CI_Remote %CONAN_REMOTE_ADDRESS%
-    - conan remove --outdated --force mariadb-connector-c/*@%CONAN_USER%/stable
-    - conan create . %CONAN_USER%/stable --update --not-export --build outdated -s build_type=Debug
-    - conan create . %CONAN_USER%/stable --update --not-export --build outdated -s build_type=Release
-    - conan user -r CI_Remote -p "%CONAN_REMOTE_PASSWORD%" %CONAN_REMOTE_USER%
-    - conan upload -r CI_Remote --confirm --check --all mariadb-connector-c/*@%CONAN_USER%/stable
-  after_script:
-    - conan user --clean
-    - conan remote remove CI_Remote
 
 # Jobs #
 
@@ -185,29 +142,13 @@ Windows/MSVC2017 Stable:
   only:
     - tags
   script:
-    - call %MSVC_ENV_SETUP%
-    - conan remote add -i 0 CI_Remote %CONAN_REMOTE_ADDRESS%
-    - conan remove --outdated --force mariadb-connector-c/*@%CONAN_USER%/stable
-    - conan create . %CONAN_USER%/stable --update --not-export --build outdated -s build_type=Debug -s compiler.runtime=MDd
-    - conan create . %CONAN_USER%/stable --update --not-export --build outdated -s build_type=Debug -s compiler.runtime=MTd
-    - conan create . %CONAN_USER%/stable --update --not-export --build outdated -s build_type=Release -s compiler.runtime=MD
-    - conan create . %CONAN_USER%/stable --update --not-export --build outdated -s build_type=Release -s compiler.runtime=MT
-    - conan user -r CI_Remote -p "%CONAN_REMOTE_PASSWORD%" %CONAN_REMOTE_USER%
-    - conan upload -r CI_Remote --confirm --check --all mariadb-connector-c/*@%CONAN_USER%/stable
+    - conan remote add -i 0 CI_Remote --force ${env:CONAN_REMOTE_ADDRESS}
+    - conan remove --outdated --force mariadb-connector-c/*@${env:CONAN_USER}/stable
+    - conan create . ${env:CONAN_USER}/stable --update --not-export --build outdated -s build_type=Debug -s compiler.runtime=MDd
+    - conan create . ${env:CONAN_USER}/stable --update --not-export --build outdated -s build_type=Debug -s compiler.runtime=MTd
+    - conan create . ${env:CONAN_USER}/stable --update --not-export --build outdated -s build_type=Release -s compiler.runtime=MD
+    - conan create . ${env:CONAN_USER}/stable --update --not-export --build outdated -s build_type=Release -s compiler.runtime=MT
+    - conan user -r CI_Remote -p "${env:CONAN_REMOTE_PASSWORD}" ${env:CONAN_REMOTE_USER}
+    - conan upload -r CI_Remote --confirm --check --all mariadb-connector-c/*@${env:CONAN_USER}/stable
   after_script:
     - conan user --clean
-    - conan remote remove CI_Remote
-
-.Windows/GCC Stable:
-  stage: Stable Binary Upload
-  tags:
-    - windows
-    - gcc
-  <<: *windows_upload_template
-
-.Windows/Clang Stable:
-  stage: Stable Binary Upload
-  tags:
-    - windows
-    - clang
-  <<: *windows_upload_template
