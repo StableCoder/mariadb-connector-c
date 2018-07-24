@@ -1,12 +1,12 @@
-[![pipeline status](http://git.stabletec.com/conan/mariadb-c-connector/badges/latest/pipeline.svg)](http://git.stabletec.com/conan/mariadb-c-connector/commits/latest)
+[![pipeline status](http://git.stabletec.com/conan/mariadb-connector-c/badges/latest/pipeline.svg)](http://git.stabletec.com/conan/mariadb-connector-c/commits/latest)
 
-# MariaDB-C-Connector
+# MariaDB-connector-c
 
 [Conan](https://www.conan.io/) package for the [MariaDB Connector/C](https://mariadb.com/kb/en/library/mariadb-connector-c/) library.
 
 ## Build Matrix
 
-[![pipeline status](http://git.stabletec.com/conan/mariadb-c-connector/badges/latest/pipeline.svg)](http://git.stabletec.com/conan/mariadb-c-connector/commits/latest)
+[![pipeline status](http://git.stabletec.com/conan/mariadb-connector-c/badges/latest/pipeline.svg)](http://git.stabletec.com/conan/mariadb-connector-c/commits/latest)
 
 In order for the above badge to be marked as 'passed', the repository must build under all combinations of the following conditions:
 
