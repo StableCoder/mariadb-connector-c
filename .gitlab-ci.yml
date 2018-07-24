@@ -23,7 +23,7 @@ stages:
   tags:
     - docker-linux
   script:
-    - conan remote add -i 0 CI_Remote $CONAN_REMOTE_ADDRESS
+    - conan remote add -i 0 CI_Remote --force $CONAN_REMOTE_ADDRESS
     - conan create . $CONAN_USER/unstable --build outdated -s build_type=Debug
     - conan create . $CONAN_USER/unstable --build outdated -s build_type=Release
 
@@ -79,7 +79,7 @@ Recipe Upload Stable:
   tags:
     - docker-linux
   script:
-    - conan remote add CI_Remote $CONAN_REMOTE_ADDRESS
+    - conan remote add CI_Remote --force $CONAN_REMOTE_ADDRESS
     - conan remove --force mariadb-connector-c/*@$CONAN_USER/stable
     - conan export . $CONAN_USER/stable
     - conan user -r CI_Remote -p $CONAN_REMOTE_PASSWORD $CONAN_REMOTE_USER
@@ -99,7 +99,7 @@ Recipe Upload Stable:
   tags:
     - docker-linux
   script:
-    - conan remote add -i 0 CI_Remote $CONAN_REMOTE_ADDRESS
+    - conan remote add -i 0 CI_Remote --force $CONAN_REMOTE_ADDRESS
     - conan create . $CONAN_USER/stable --update --not-export --build outdated -s build_type=Debug
     - conan create . $CONAN_USER/stable --update --not-export --build outdated -s build_type=Release
     - conan user -r CI_Remote -p $CONAN_REMOTE_PASSWORD $CONAN_REMOTE_USER
