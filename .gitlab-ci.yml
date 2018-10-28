@@ -17,17 +17,13 @@ stages:
 # Build & Test #
 ################
 
-# Templates #
-
 .unix_build_template: &unix_build_template
   tags:
     - docker-linux
   script:
     - conan remote add -i 0 CI_Remote --force $CONAN_REMOTE_ADDRESS
-    - conan create . $CONAN_USER/unstable --build outdated -s build_type=Debug
-    - conan create . $CONAN_USER/unstable --build outdated -s build_type=Release
-
-# Jobs #
+    - conan create . $CONAN_USER/unstable --build missing -s build_type=Debug
+    - conan create . $CONAN_USER/unstable --build missing -s build_type=Release
 
 CentOS6/GCC Unstable:
   stage: Build & Test
@@ -57,15 +53,19 @@ Fedora/Clang Unstable:
 Windows/MSVC2017 Unstable:
   stage: Build & Test
   tags:
-    - windows
-    - msvc2017
+    - docker-windows
   script:
-    - conan remote add -i 0 CI_Remote --force ${env:CONAN_REMOTE_ADDRESS}
-    - conan remove --outdated --force mariadb-connector-c/*@${env:CONAN_USER}/unstable
-    - conan create . ${env:CONAN_USER}/unstable --build outdated -s build_type=Debug -s compiler.runtime=MDd
-    - conan create . ${env:CONAN_USER}/unstable --build outdated -s build_type=Debug -s compiler.runtime=MTd
-    - conan create . ${env:CONAN_USER}/unstable --build outdated -s build_type=Release -s compiler.runtime=MD
-    - conan create . ${env:CONAN_USER}/unstable --build outdated -s build_type=Release -s compiler.runtime=MT
+    - echo 'try {'  | out-file -encoding utf8 build.ps1
+    - echo "cd C:\workdir" | out-file -encoding utf8 -append build.ps1
+    - echo "conan remote add -i 0 CI_Remote --force ${env:CONAN_REMOTE_ADDRESS}" | out-file -encoding utf8 -append build.ps1
+    - echo "conan create . ${env:CONAN_USER}/unstable --build missing -s build_type=Debug" | out-file -encoding utf8 -append build.ps1
+    - echo "conan create . ${env:CONAN_USER}/unstable --build missing -s build_type=Debug -s compiler.runtime=MDd" | out-file -encoding utf8 -append build.ps1
+    - echo "conan create . ${env:CONAN_USER}/unstable --build missing -s build_type=Debug -s compiler.runtime=MTd" | out-file -encoding utf8 -append build.ps1
+    - echo "conan create . ${env:CONAN_USER}/unstable --build missing -s build_type=Release" | out-file -encoding utf8 -append build.ps1
+    - echo "conan create . ${env:CONAN_USER}/unstable --build missing -s build_type=Release -s compiler.runtime=MD" | out-file -encoding utf8 -append build.ps1
+    - echo "conan create . ${env:CONAN_USER}/unstable --build missing -s build_type=Release -s compiler.runtime=MT" | out-file -encoding utf8 -append build.ps1
+    - echo '} catch { exit 1 }' | out-file -encoding utf8 -append build.ps1
+    - docker run --rm -v ${pwd}:C:\workdir stabletec/build-core:windows-msvc2017 C:\workdir\build.ps1
 
 ##############################
 # Stable Recipe Upload Stage #
@@ -80,7 +80,6 @@ Recipe Upload Stable:
     - docker-linux
   script:
     - conan remote add CI_Remote --force $CONAN_REMOTE_ADDRESS
-    - conan remove --force mariadb-connector-c/*@$CONAN_USER/stable
     - conan export . $CONAN_USER/stable
     - conan user -r CI_Remote -p $CONAN_REMOTE_PASSWORD $CONAN_REMOTE_USER
     - conan upload -r CI_Remote --confirm mariadb-connector-c/*@$CONAN_USER/stable
@@ -91,8 +90,6 @@ Recipe Upload Stable:
 # Stable Binary Upload #
 ########################
 
-# Templates #
-
 .unix_upload_template: &unix_upload_template
   only:
     - tags
@@ -100,14 +97,12 @@ Recipe Upload Stable:
     - docker-linux
   script:
     - conan remote add -i 0 CI_Remote --force $CONAN_REMOTE_ADDRESS
-    - conan create . $CONAN_USER/stable --update --not-export --build outdated -s build_type=Debug
-    - conan create . $CONAN_USER/stable --update --not-export --build outdated -s build_type=Release
+    - conan create . $CONAN_USER/stable --update --not-export --build missing -s build_type=Debug
+    - conan create . $CONAN_USER/stable --update --not-export --build missing -s build_type=Release
     - conan user -r CI_Remote -p $CONAN_REMOTE_PASSWORD $CONAN_REMOTE_USER
     - conan upload -r CI_Remote --confirm --check --all mariadb-connector-c/*@$CONAN_USER/stable
   after_script:
     - conan user --clean
-
-# Jobs #
 
 CentOS6/GCC Stable:
   stage: Stable Binary Upload
@@ -137,18 +132,20 @@ Fedora/Clang Stable:
 Windows/MSVC2017 Stable:
   stage: Stable Binary Upload
   tags:
-    - windows
-    - msvc2017
+    - docker-windows
   only:
     - tags
   script:
-    - conan remote add -i 0 CI_Remote --force ${env:CONAN_REMOTE_ADDRESS}
-    - conan remove --outdated --force mariadb-connector-c/*@${env:CONAN_USER}/stable
-    - conan create . ${env:CONAN_USER}/stable --update --not-export --build outdated -s build_type=Debug -s compiler.runtime=MDd
-    - conan create . ${env:CONAN_USER}/stable --update --not-export --build outdated -s build_type=Debug -s compiler.runtime=MTd
-    - conan create . ${env:CONAN_USER}/stable --update --not-export --build outdated -s build_type=Release -s compiler.runtime=MD
-    - conan create . ${env:CONAN_USER}/stable --update --not-export --build outdated -s build_type=Release -s compiler.runtime=MT
-    - conan user -r CI_Remote -p "${env:CONAN_REMOTE_PASSWORD}" ${env:CONAN_REMOTE_USER}
-    - conan upload -r CI_Remote --confirm --check --all mariadb-connector-c/*@${env:CONAN_USER}/stable
-  after_script:
-    - conan user --clean
+    - echo 'try {'  | out-file -encoding utf8 build.ps1
+    - echo "cd C:\workdir" | out-file -encoding utf8 -append build.ps1
+    - echo "conan remote add -i 0 CI_Remote --force ${env:CONAN_REMOTE_ADDRESS}" | out-file -encoding utf8 -append build.ps1
+    - echo "conan create . ${env:CONAN_USER}/stable --update --not-export --build missing -s build_type=Debug" | out-file -encoding utf8 -append build.ps1
+    - echo "conan create . ${env:CONAN_USER}/stable --update --not-export --build missing -s build_type=Debug -s compiler.runtime=MDd" | out-file -encoding utf8 -append build.ps1
+    - echo "conan create . ${env:CONAN_USER}/stable --update --not-export --build missing -s build_type=Debug -s compiler.runtime=MTd" | out-file -encoding utf8 -append build.ps1
+    - echo "conan create . ${env:CONAN_USER}/stable --update --not-export --build missing -s build_type=Release" | out-file -encoding utf8 -append build.ps1
+    - echo "conan create . ${env:CONAN_USER}/stable --update --not-export --build missing -s build_type=Release -s compiler.runtime=MD" | out-file -encoding utf8 -append build.ps1
+    - echo "conan create . ${env:CONAN_USER}/stable --update --not-export --build missing -s build_type=Release -s compiler.runtime=MT" | out-file -encoding utf8 -append build.ps1
+    - echo "conan user -r CI_Remote -p "${env:CONAN_REMOTE_PASSWORD}" ${env:CONAN_REMOTE_USER}" | out-file -encoding utf8 -append build.ps1
+    - echo "conan upload -r CI_Remote --confirm --check --all mariadb-connector-c/*@${env:CONAN_USER}/stable" | out-file -encoding utf8 -append build.ps1
+    - echo '} catch { exit 1 }' | out-file -encoding utf8 -append build.ps1
+    - docker run --rm -v ${pwd}:C:\workdir stabletec/build-core:windows-msvc2017 C:\workdir\build.ps1
