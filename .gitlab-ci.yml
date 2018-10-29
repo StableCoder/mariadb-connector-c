@@ -65,7 +65,7 @@ Windows/MSVC2017 Unstable:
     - echo "conan create . ${env:CONAN_USER}/unstable --build missing -s build_type=Release -s compiler.runtime=MD" | out-file -encoding utf8 -append build.ps1
     - echo "conan create . ${env:CONAN_USER}/unstable --build missing -s build_type=Release -s compiler.runtime=MT" | out-file -encoding utf8 -append build.ps1
     - echo '} catch { exit 1 }' | out-file -encoding utf8 -append build.ps1
-    - docker run --rm -v ${pwd}:C:\workdir stabletec/build-core:windows-msvc2017 C:\workdir\build.ps1
+    - docker run --rm -v ${pwd}:C:\workdir stabletec/build-core:windows-msvc C:\workdir\build.ps1
 
 ##############################
 # Stable Recipe Upload Stage #
@@ -148,4 +148,4 @@ Windows/MSVC2017 Stable:
     - echo "conan user -r CI_Remote -p "${env:CONAN_REMOTE_PASSWORD}" ${env:CONAN_REMOTE_USER}" | out-file -encoding utf8 -append build.ps1
     - echo "conan upload -r CI_Remote --confirm --check --all mariadb-connector-c/*@${env:CONAN_USER}/stable" | out-file -encoding utf8 -append build.ps1
     - echo '} catch { exit 1 }' | out-file -encoding utf8 -append build.ps1
-    - docker run --rm -v ${pwd}:C:\workdir stabletec/build-core:windows-msvc2017 C:\workdir\build.ps1
+    - docker run --rm -v ${pwd}:C:\workdir stabletec/build-core:windows-msvc C:\workdir\build.ps1
