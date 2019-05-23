@@ -34,7 +34,7 @@ class MariadbConnectorConan(ConanFile):
 
     def requirements(self):
         if self.options.with_ssl:
-            self.requires("OpenSSL/1.1.1a@conan/stable")
+            self.requires("OpenSSL/1.1.0j@conan/stable")
         if self.options.with_external_zlib:
             self.requires("zlib/1.2.11@conan/stable")
         if self.options.with_curl:
