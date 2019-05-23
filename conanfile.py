@@ -4,7 +4,7 @@ import os
 
 class MariadbConnectorConan(ConanFile):
     name = "mariadb-connector-c"
-    version = "3.1.0"
+    version = "3.0.9"
     license = "LGPL 2.1"
     url = "https://git.stabletec.com/conan/mariadb-connector-c"
     description = "MariaDB Connector/C is used to connect applications developed in C/C++ to MariaDB and MySQL databases."
@@ -34,7 +34,7 @@ class MariadbConnectorConan(ConanFile):
 
     def requirements(self):
         if self.options.with_ssl:
-            self.requires("OpenSSL/1.1.0g@conan/stable")
+            self.requires("OpenSSL/1.1.1a@conan/stable")
         if self.options.with_external_zlib:
             self.requires("zlib/1.2.11@conan/stable")
         if self.options.with_curl:
